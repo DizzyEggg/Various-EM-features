@@ -12,7 +12,6 @@ MaxLevel = 				250
 #To Edit ends
 
 from glob import glob
-from datetime import datetime
 import os
 import itertools
 import hashlib
