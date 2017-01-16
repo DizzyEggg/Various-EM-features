@@ -9,6 +9,10 @@ NewEvolutionMethods = 	True
 NatureStatColor = 		True
 MoreLevels =			True
 MaxLevel = 				250
+
+insert_offset = 0xF00000 	#Offset as to where insert data
+rom_name = "BPEE0.gba"		#Name of your rom
+copy_name = "test.gba"		#Name of the created rom
 #To Edit ends
 
 from glob import glob
@@ -53,10 +57,6 @@ ASFLAGS = ['-mthumb', '-I', SRC]
 LDFLAGS = ['BPEE.ld', '-T', 'linker.ld']
 CFLAGS = ['-mthumb', '-mno-thumb-interwork', '-mcpu=arm7tdmi',
 		'-fno-inline', '-mlong-calls', '-march=armv4t', '-Wall', '-O2']
-		
-insert_offset = 0xF00000
-rom_name = "BPEE0.gba"
-copy_name = "test.gba"
 
 def run_command(cmd):
 	try:
