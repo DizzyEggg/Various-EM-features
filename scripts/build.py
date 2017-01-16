@@ -174,96 +174,96 @@ def build_script():
 	objcopy(linked)
 	
 def get_text_section():
-		# Dump sections
-		out = subprocess.check_output([OBJDUMP, '-t', 'build/linked.o'])
-		lines = out.decode().split('\n')
-		
-		# Find text section
-		text = filter(lambda x: x.strip().endswith('.text'), lines)
-		section = (list(text))[0]
-		
-		# Get the offset
-		offset = int(section.split(' ')[0], 16)
-		
-		return offset
+	# Dump sections
+	out = subprocess.check_output([OBJDUMP, '-t', 'build/linked.o'])
+	lines = out.decode().split('\n')
+	
+	# Find text section
+	text = filter(lambda x: x.strip().endswith('.text'), lines)
+	section = (list(text))[0]
+	
+	# Get the offset
+	offset = int(section.split(' ')[0], 16)
+	
+	return offset
 		
 def symbols(subtract=0):
-		out = subprocess.check_output([NM, 'build/linked.o'])
-		lines = out.decode().split('\n')
-		
-		name = ''
-		
-		ret = {}
-		for line in lines:
-				parts = line.strip().split()
-				
-				if (len(parts) < 3):
-						continue
-						
-				if (parts[1].lower() not in {'t','d'}):
-						continue
-						
-				offset = int(parts[0], 16)
-				ret[parts[2]] = offset - subtract
-				
-		return ret
+	out = subprocess.check_output([NM, 'build/linked.o'])
+	lines = out.decode().split('\n')
+	
+	name = ''
+	
+	ret = {}
+	for line in lines:
+			parts = line.strip().split()
+			
+			if (len(parts) < 3):
+					continue
+					
+			if (parts[1].lower() not in {'t','d'}):
+					continue
+					
+			offset = int(parts[0], 16)
+			ret[parts[2]] = offset - subtract
+			
+	return ret
 		
 def insert(rom):
-		where = insert_offset
-		rom.seek(where)
-		with open('build/output.bin', 'rb') as binary:
-				data = binary.read()
-		rom.write(data)
-		return where
+	where = insert_offset
+	rom.seek(where)
+	with open('build/output.bin', 'rb') as binary:
+			data = binary.read()
+	rom.write(data)
+	return where
 					   
 def hook(rom, space, hook_at, register=0):
-		# Align 2
-		if hook_at & 1:
-			hook_at -= 1
-			
-		rom.seek(hook_at)
+	# Align 2
+	if hook_at & 1:
+		hook_at -= 1
 		
-		register &= 7
+	rom.seek(hook_at)
+	
+	register &= 7
+	
+	if hook_at % 4:
+		data = bytes([0x01, 0x48 | register, 0x00 | (register << 3), 0x47, 0x0, 0x0])
+	else:
+		data = bytes([0x00, 0x48 | register, 0x00 | (register << 3), 0x47])
 		
-		if hook_at % 4:
-			data = bytes([0x01, 0x48 | register, 0x00 | (register << 3), 0x47, 0x0, 0x0])
-		else:
-			data = bytes([0x00, 0x48 | register, 0x00 | (register << 3), 0x47])
-			
-		space += 0x08000001
-		data += (space.to_bytes(4, 'little'))
-		rom.write(bytes(data))
+	space += 0x08000001
+	data += (space.to_bytes(4, 'little'))
+	rom.write(bytes(data))
 
 def funcwrap(rom, space, hook_at, nparams, isreturning):
-		# Align 2
-		if hook_at & 1:
-				hook_at -= 1
-			
-		rom.seek(hook_at)
-		nparams=nparams-1
-
-		if nparams<4:
-				data = bytes([0x10, 0xB5, 0x3, 0x4C, 0x0, 0xF0, 0x3, 0xF8, 0x10, 0xBC , (isreturning+1), 0xBC , (isreturning<<3), 0x47, 0x20, 0x47])
-		else:
-				k=nparams-3
-				data = bytes([0x10, 0xB5, 0x82, 0xB0])
-				for i in range(k+2):
-						data += bytes([ i+2, 0x9C , i, 0x94])
-				data += bytes([0x0, 0x9C , (nparams-1), 0x94, 0x1, 0x9C , nparams, 0x94, 0x2, 0xB0 , (k+8), 0x4C,
-							   0x0, 0xF0 , ((k<<1)+13), 0xF8, 0x82, 0xB0 , nparams, 0x9C, 0x1, 0x94 , (nparams-1), 0x9C , 0x0, 0x94])
-				for i in reversed(range(k+2)):
-						data += bytes([ i, 0x9C , i+2, 0x94])
-				data += bytes([0x2, 0xB0 , 0x10, 0xBC, (isreturning+1), 0xBC , (isreturning<<3), 0x47, 0x20, 0x47])
+	# Align 2
+	if hook_at & 1:
+		hook_at -= 1
 		
-		space += 0x08000001
-		data += (space.to_bytes(4, 'little'))
-		rom.write(bytes(data))
+	rom.seek(hook_at)
+	nparams=nparams-1
+
+	if nparams<4:
+		data = bytes([0x10, 0xB5, 0x3, 0x4C, 0x0, 0xF0, 0x3, 0xF8, 0x10, 0xBC , (isreturning+1), 0xBC , (isreturning<<3), 0x47, 0x20, 0x47])
+	else:
+		k=nparams-3
+		data = bytes([0x10, 0xB5, 0x82, 0xB0])
+		for i in range(k+2):
+				data += bytes([ i+2, 0x9C , i, 0x94])
+		data += bytes([0x0, 0x9C , (nparams-1), 0x94, 0x1, 0x9C , nparams, 0x94, 0x2, 0xB0 , (k+8), 0x4C,
+					   0x0, 0xF0 , ((k<<1)+13), 0xF8, 0x82, 0xB0 , nparams, 0x9C, 0x1, 0x94 , (nparams-1), 0x9C , 0x0, 0x94])
+		for i in reversed(range(k+2)):
+				data += bytes([ i, 0x9C , i+2, 0x94])
+		data += bytes([0x2, 0xB0 , 0x10, 0xBC, (isreturning+1), 0xBC , (isreturning<<3), 0x47, 0x20, 0x47])
+	
+	space += 0x08000001
+	data += (space.to_bytes(4, 'little'))
+	rom.write(bytes(data))
 
 def repoint(rom, space, repoint_at):
-		rom.seek(repoint_at)
-		space += (0x08000000)
-		data = (space.to_bytes(4, 'little'))
-		rom.write(bytes(data))
+	rom.seek(repoint_at)
+	space += (0x08000000)
+	data = (space.to_bytes(4, 'little'))
+	rom.write(bytes(data))
 		
 def routine_repoint(rom, space, repoint_at):
 	repoint(rom, space | 1, repoint_at)
