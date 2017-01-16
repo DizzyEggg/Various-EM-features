@@ -4,8 +4,8 @@
 BWRepel = 				False
 WildMusic = 			False
 EVTrainers = 			False
-MoreMoney = 			False
-NewEvolutionMethods = 	True
+MoreMoney = 			True
+NewEvolutionMethods = 	False
 NatureStatColor = 		True
 MoreLevels =			True
 MaxLevel = 				250
@@ -286,7 +286,7 @@ def insert_script():
 	
 	# Insert hooks
 	if MoreMoney == True:		
-		hook(rom, table["prepare_money_box"], 0x06E466, 3)
+		hook(rom, table["prepare_money_box"], 0x0E51F4, 3)
 	if EVTrainers == True:
 		hook(rom, table["create_trainer_pokemon"], 0x0385E8, 3)
 	if WildMusic == True:
