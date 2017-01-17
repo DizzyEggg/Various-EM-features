@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
 #To Edit
-BWRepel = 				False
+BWRepel = 				True
 WildMusic = 			False
 EVTrainers = 			False
-MoreMoney = 			True
+MoreMoney = 			False
 NewEvolutionMethods = 	False
-NatureStatColor = 		True
+NatureStatColor = 		False
 MoreLevels =			True
 MaxLevel = 				250
 
-insert_offset = 0xF00000 	#Offset as to where insert data
+insert_offset = 0xFF0000 	#Offset as to where insert data
 rom_name = "BPEE0.gba"		#Name of your rom
 copy_name = "test.gba"		#Name of the created rom
 #To Edit ends
@@ -133,6 +133,20 @@ def edit_defines():
 	defines.write(copy)
 	defines.close()
 	
+def edit_linker():
+	linker = open("linker.ld", 'r+')
+	copy = linker.read()
+	linker.seek(0x0)
+	line_no = 1
+	for line in linker:
+		if (line_no == 4):
+			copy = copy.replace(line, "\t\trom     : ORIGIN = (0x08000000 + " + hex(insert_offset) + "), LENGTH = 32M\n")
+			break
+		line_no += 1
+	linker.seek(0x0)
+	linker.write(copy)
+	linker.close()
+	
 def build_script():
 	#erase build folder if it exists
 	if os.path.isdir(BUILD):
@@ -160,6 +174,8 @@ def build_script():
 		sys.exit(1)
 	#edit defines in defines.h
 	edit_defines()
+	#change offset in linker file
+	edit_linker()
 	# Create output directory
 	try:
 		os.makedirs(BUILD)
