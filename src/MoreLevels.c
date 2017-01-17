@@ -287,6 +287,8 @@ void display_exp_instatssummary()
 {
     u8 rboxID = pokesummary_create_rbox(&ExpRbox - 4, 4);
     unsigned_int_to_string(&script_text_buff1[2], poke_summary->owned_exp, 1, 10);
+    script_text_buff1[0] = 0x77;
+    script_text_buff1[1] = 0x77;
     string_box_build(rboxID, &script_text_buff1[0], 0xF4, 1, 0x0, 0x0);
     u32 needed_exp = 0;
     if (poke_summary->lvl != MAX_LEVEL)
