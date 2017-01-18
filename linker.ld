@@ -1,7 +1,7 @@
 OUTPUT_ARCH(arm)
 MEMORY {
 
-        rom     : ORIGIN = (0x08000000 + 0xF00000), LENGTH = 32M
+		rom     : ORIGIN = (0x08000000 + 0xff0000), LENGTH = 32M
         ewram   : ORIGIN = 0x02000000, LENGTH = 4M - 4k
 }
 
@@ -27,4 +27,6 @@ SECTIONS {
         __end__ = __bss_end__ ;
         } >rom = 0xff
 }
+
+
 
