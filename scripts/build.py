@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
 #To Edit
-BWRepel = 				True
+BWRepel = 				False
 WildMusic = 			False
 EVTrainers = 			False
 MoreMoney = 			False
 NewEvolutionMethods = 	False
 NatureStatColor = 		False
-MoreLevels =			True
-MaxLevel = 				250
+MoreLevels =			False
+MaxLevel = 				250		#Maximal level avaiable
+EvosPerPoke =			8		#Number of evolutions per pokemon in your rom hack
 
 insert_offset = 0xFF0000 	#Offset as to where insert data
 rom_name = "BPEE0.gba"		#Name of your rom
@@ -120,6 +121,9 @@ def edit_defines():
 			if MoreLevels == False:
 				to_write = "false"
 			newline = directive + ' ' + name + '\t\t' + to_write + '\n'
+			copy = copy.replace(line, newline)
+		elif NewEvolutionMethods == True and name == "EVO_PER_POKE":
+			newline = directive + ' ' + name + '\t' + str(EvosPerPoke) + '\n'
 			copy = copy.replace(line, newline)
 		elif name == "COLORED_STATS":
 			to_write = "true"
