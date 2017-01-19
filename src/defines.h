@@ -17,11 +17,11 @@ enum overworld_weather{
 #define REPEL_Y 0
 
 #define POKES_NO        442
-#define EVO_PER_POKE    5
+#define EVO_PER_POKE	5
 #define ALL_ITEMS       386
 #define MAX_LEVEL		250
 #define MORELEVELS      true
-#define COLORED_STATS	true
+#define COLORED_STATS	false
 
 #define DAY_FIRST_HOUR      8
 #define DAY_LAST_HOUR       20
@@ -116,3 +116,5 @@ enum overworld_weather{
 #define z_ 0xEE
 
 #endif /* DEFINES_H */
+
+
