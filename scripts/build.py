@@ -9,7 +9,7 @@ NewEvolutionMethods = 	False
 NatureStatColor = 		False
 MoreLevels =			False
 MaxLevel = 				250		#Maximal level avaiable
-EvosPerPoke =			8		#Number of evolutions per pokemon in your rom hack
+EvosPerPoke =			5		#Number of evolutions per pokemon in your rom hack
 
 insert_offset = 0xFF0000 	#Offset as to where insert data
 rom_name = "BPEE0.gba"		#Name of your rom
