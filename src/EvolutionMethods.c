@@ -78,7 +78,7 @@ u16 try_evolving_poke(struct pokemon* poke, enum evo_index index, u16 stoneID)
         switch (method)
         {
         case 0: //no evolution
-            break;
+            return 0;
         case 1: //happiness
             evolving = happiness_evo_check(poke, 0, 24);
             break;
