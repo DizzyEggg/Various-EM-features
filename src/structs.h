@@ -4,6 +4,27 @@
 #include "types.h"
 #include "defines.h"
 
+struct blockset{
+    u8 compressed;
+    u8 pal_mode_flag;
+    u8 field2;
+    u8 field3;
+    void* tileset;
+    void* pals;
+    void* blockset_data;
+    void* bg_bytes;
+    void* anim_routine;
+};
+
+struct palette{
+  u16 c[16];
+};
+
+extern struct palette OBJ_PaletteMem[16];
+extern struct palette OBJ_PaletteMem2[16];
+extern struct palette BG_PaletteMem[16];
+extern struct palette BG_PaletteMem2[16];
+
 struct mapheader{
     void* footer;
     void* events;
@@ -208,10 +229,11 @@ struct trainer_data{
     u8 name[10];
     u8 field_E;
     u16 items[4];
-    u8 flags[4];
+    u8 double_battle;
+    u8 padd1[3];
     u32 ai_scripts;
     u8 poke_number;
-    u8 padd[3];
+    u8 padd2[3];
     struct poke_trainer_data* poke_data;
 };
 
@@ -331,17 +353,15 @@ struct coords8{
     u8 y;
 };
 
-struct object;
-typedef void (*object_callback)(struct object*);
+struct tile_ball{
+    void* ptr;
+    u16 field_4;
+    u16 tile_ID;
+};
 
-struct template {
-  u16 tiles_tag;
-  u16 pal_tag;
-  struct sprite *oam;
-  struct frame **animation;
-  u32 *graphics;
-  struct rotscale_frame **rotscale;
-  object_callback callback;
+struct tile_pal{
+    void* ptr;
+    u16 tile_ID;
 };
 
 struct object{
@@ -368,6 +388,18 @@ struct object{
     u16 anim_data_offset;
     u8 field_42;
     u8 y_height_related;
+};
+
+typedef void (*object_callback)(struct object*);
+
+struct template {
+  u16 tiles_tag;
+  u16 pal_tag;
+  struct sprite *oam;
+  struct frame **animation;
+  u32 *graphics;
+  struct rotscale_frame **rotscale;
+  object_callback callback;
 };
 
 struct image_resource{
