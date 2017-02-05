@@ -61,5 +61,7 @@ void create_trainer_pokemon(struct pokemon* poke, u16 trainerID, u8 purge)
                 set_attributes(&poke[i], ATTR_ABILITY_BIT, &config->abilityID);
             }
         }
+        if (trainer->double_battle)
+            battle_flags.double_battle = 1;
     }
 }
