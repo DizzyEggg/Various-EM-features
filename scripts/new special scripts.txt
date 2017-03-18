@@ -1,0 +1,263 @@
+Rboxes script:
+
+#dynamic 0xFC0000
+
+#org @rboxes
+lockall
+
+//create rbox0
+setvar 0x8004 1		//pos X
+setvar 0x8005 1		//pos Y
+setvar 0x8006 24	//width
+setvar 0x8007 2		//height
+special2 0x8008 0x221 //0x8008 contains ID of rbox0
+
+//create rbox1
+setvar 0x8004 1
+setvar 0x8005 8
+setvar 0x8006 4
+setvar 0x8007 2
+special2 0x8009 0x221 //0x8009 contains ID of rbox1
+
+//create rbox2
+setvar 0x8004 1
+setvar 0x8005 15
+setvar 0x8006 10
+setvar 0x8007 2
+special2 0x800A 0x221 //0x800A contains ID of rbox2
+
+//put text on rbox0
+copyvar 0x8004 0x8008
+setvar 0x8005 0
+setvar 0x8006 0
+special 0x222
+#raw Pointer @rbox0text
+
+//put text on rbox1
+copyvar 0x8004 0x8009
+setvar 0x8005 0
+setvar 0x8006 0
+special 0x222
+#raw Pointer @rbox1text
+
+//put text on rbox2
+copyvar 0x8004 0x800A
+setvar 0x8005 0
+setvar 0x8006 0
+special 0x222
+#raw Pointer @rbox2text
+
+waitkeypress
+
+//modify the text on rbox0
+copyvar 0x8004 0x8008
+setvar 0x8005 20
+setvar 0x8006 0
+special 0x222
+#raw Pointer @rbox0modified
+
+waitkeypress
+
+//delete rbox0
+copyvar 0x8004 0x8008
+special 0x223
+
+//delete rbox1
+copyvar 0x8004 0x8009
+special 0x223
+
+//delete rbox2
+copyvar 0x8004 0x800A
+special 0x223
+
+//script end
+releaseall
+end
+
+#org @rbox0text
+= A long text. Rbox0 ababababaa
+
+#org @rbox1text
+= Rbox1
+
+#org @rbox2text
+= Two letters: R B
+
+#org @rbox0modified
+= Rbox0 modified
+
+Give custom pokemon script:
+'---------------
+#org @givepoke
+lockall
+msgbox @givetext 0x6
+setvar 0x8004 0x97 //species set to Mew
+setvar 0x8005 0x45 //level set to 69
+setvar 0x8006 0xFF //random nature
+setvar 0x8007 0x0 //no shininess
+special 0x229 //create a custom pokemon
+setvar 0x8004 0xC //modify its held item
+setvar 0x8005 0x1 //item set to master ball
+special 0x22A //set attributes
+special 0x22B //give the pokemon
+//dowildbattle - that would make the Mew battle with you
+releaseall
+end
+
+
+'---------
+' Strings
+'---------
+#org @givetext
+= Have a poke, loser.
+
+New Multichoices:
+
+#dynamic 0xFC0000
+
+#org @multichoices
+lockall
+faceplayer
+msgbox @hi 0x6
+setvar 0x8004 4 //number of options
+setvar 0x8005 1 //X-pos
+setvar 0x8006 1 //Y-pos
+special 0x21B
+#raw Pointer @choice_happy
+#raw Pointer @choice_sad
+#raw Pointer @choice_alright
+#raw Pointer @choice_cute
+waitstate
+compare 0x800D 0x0
+if 0x1 goto @chose_happy
+compare 0x800D 0x1
+if 0x1 goto @chose_sad
+compare 0x800D 0x2
+if 0x1 goto @chose_alright
+//chose_cute:
+msgbox @cute_sym 0x6
+releaseall
+end
+
+#org @chose_happy
+msgbox @happy_sym 0x6
+releaseall
+end
+
+#org @chose_sad
+msgbox @sad_sym 0x6
+releaseall
+end
+
+#org @chose_alright
+msgbox @alright_sym 0x6
+releaseall
+end
+
+#org @hi
+= Choose a word.
+
+#org @choice_happy
+= happy
+
+#org @choice_sad
+= sad
+
+#org @choice_alright
+= alright
+
+#org @choice_cute
+= cute
+
+#org @happy_sym
+= amused
+
+#org @sad_sym
+= gloomy
+
+#org @alright_sym
+= well
+
+#org @cute_sym
+= sweet
+
+
+Pokemon Attributes:
+
+#include attributes.rbh
+
+#dynamic 0xFC0000
+
+#org @attributes
+lockall
+setvar 0x8004 0x0
+setvar 0x8005 ATTR_TOTAL_HP
+special2 0x8006 0x210 //get total hp
+// not needed since 0x8004 is already 0 //setvar 0x8004 0x0
+setvar 0x8005 ATTR_CURRENT_HP
+special 0x211 //set current hp to be total hp
+releaseall
+end
+
+
+Timers:
+
+#dynamic 0xFC0000
+
+#org @timer
+lockall
+checkflag 0x941
+if 0x1 goto @tell_timer
+special 0x216
+setflag 0x941
+msgbox @timerstart 0x6
+releaseall
+end
+
+#org @tell_timer
+special 0x218
+msgbox @timer_value 0x6
+checkflag 0x942
+if 0x1 goto @timer_stopped
+msgbox @wanna_stop 0x5
+compare 0x800D 0x1
+if 0x0 goto @script_end
+setflag 0x942
+msgbox @timer_stopped_msg 0x6
+special 0x219
+releaseall
+end
+
+#org @script_end
+releaseall
+end
+
+#org @timer_stopped
+msgbox @wanna_continue 0x5
+compare 0x800D 0x1
+if 0x0 goto @script_end
+clearflag 0x942
+special 0x21A
+msgbox @timer_continue_msg 0x6
+releaseall
+end
+
+#org @timerstart
+= Timer has been started.
+
+#org @timer_stopped_msg
+= Timer has been stopped.
+
+#org @timer_value
+= Timer: [buffer1].
+
+#org @wanna_stop
+= Would you like to stop timer?
+
+#org @wanna_continue
+= Would you like to continue timer?
+
+#org @timer_continue_msg
+= Timer continues.
+
+

@@ -17,11 +17,96 @@ enum overworld_weather{
 #define REPEL_Y 0
 
 #define POKES_NO        442
-#define EVO_PER_POKE	5
+#define EVO_PER_POKE		5
+#define EEVEE_TABLE     true
 #define ALL_ITEMS       386
 #define MAX_LEVEL		250
 #define MORELEVELS      true
-#define COLORED_STATS	false
+#define COLORED_STATS		false
+#define BALL_EXPANSION  true
+#define FIRST_NEW_BALL_ID		226
+#define LAST_OLD_BALL_ID    0xC
+#define BALLS_AMOUNT    0x1A
+#define NEWBALLS_TILE   0xF100
+#define NEWBALLS_STARS  0xF120
+
+#define NO_OF_TUTORS		32
+#define NO_OF_TMS_HMS		58
+#define EXPANDED_LEARNSETS		true
+
+#define FAMEHALL_MAX 40
+
+#define custom_flagcheck(flagID)(flagID == 0 ? 1 : getflag(flagID))
+#define custom_flagset(flagID)(flagID == 0 ? 0 : setflag(flagID))
+#define ATLEAST_ONE(value)(value ? value : 1)
+#define BIC(value, bit)(value & (~(bit)))
+#define NEG_AND(value, to_neg)(value & (to_neg * (-1)))
+#define get_nature(PiD)((__umodsi3(PiD, 25)))
+#define get_gender(pid, ratio)(((ratio) > (0xFF & pid) ? 0xFE : 0))
+
+#define DEX_MENU_FLAG		0x861
+#define POKE_MENU_FLAG		0x860
+#define POKENAV_MENU_FLAG		0x862
+#define BAG_MENU_FLAG		0x0
+#define SAVE_MENU_FLAG		0x0
+#define EXIT_MENU_FLAG		0x0
+#define TRAINERCARD_MENU_FLAG		0x0
+#define OPTIONS_MENU_FLAG		0x0
+
+#define BW_REPEL		true
+#define FIRERED_FISHING		false
+#define CHAIN_FISHING		false
+#define SHINY_CHARM		0x0
+#define FISHING_FLAG		0x0
+
+#define txt_pokemon P_, o_, k_, Poke_e, m_, o_, n_
+#define txt_A_ball A_, Space, B_, a_, l_, l_
+#define txt_for_catching f_, o_, r_, Space, c_, a_, t_, c_, h_, i_, n_, g_
+
+#define percent_chance(percent)(__umodsi3(rng(), 101) <= percent)
+
+enum ball_index{
+    BALL_POKE, //0x0
+    BALL_GREAT, //0x1
+    BALL_SAFARI, //0x2
+    BALL_ULTRA, //0x3
+    BALL_MASTER, //0x4
+    BALL_NET, //0x5
+    BALL_DIVE, //0x6
+    BALL_NEST, //0x7
+    BALL_REPEAT, //0x8
+    BALL_TIMER, //0x9
+    BALL_LUXURY, //0xA
+    BALL_PREMIER, //0xB
+    //new balls
+    #if BALL_EXPANSION == true
+    BALL_LEVEL, //0xC
+    BALL_LURE, //0xD
+    BALL_MOON, //0xE
+    BALL_FRIEND, //0xF
+    BALL_LOVE, //0x10
+    BALL_HEAVY, //0x11
+    BALL_FAST, //0x12
+    BALL_SPORT, //0x13
+    BALL_DUSK, //0x14
+    BALL_QUICK, //0x15
+    BALL_HEAL, //0x16
+    BALL_CHERISH, //0x17
+    BALL_PARK, //0x18
+    BALL_DREAM, //0x19
+    BALL_BEAST, //0x1A
+    #endif // BALL_EXPANSION
+};
+
+enum ball_stars{
+    BALL_STICKS, //0
+    BALL_STARS, //1
+    BALL_BUBBLES, //2
+    BALL_HEARTS, //3
+    BALL_BIG_CROSSES, //4
+    BALL_SMALL_CROSSES, //5
+};
+
 
 #define DAY_FIRST_HOUR      8
 #define DAY_LAST_HOUR       20
@@ -116,5 +201,10 @@ enum overworld_weather{
 #define z_ 0xEE
 
 #endif /* DEFINES_H */
+
+
+
+
+
 
 

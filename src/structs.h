@@ -4,6 +4,78 @@
 #include "types.h"
 #include "defines.h"
 
+struct move_info{
+    u8 scriptID;
+    u8 power;
+    u8 type;
+    u8 acc;
+    u8 pp;
+    u8 effect_chance;
+    u8 target;
+    u8 priority;
+    u8 flags;
+    u8 padd[3];
+};
+
+extern struct move_info (*move_table)[355];
+
+struct fame_hall_poke_pos{
+    s16 x_jump;
+    s16 y_jump;
+    u16 field4;
+    u16 field6;
+};
+
+extern struct fame_hall_poke_pos fame_hall_pokes_pos1[6];
+extern struct fame_hall_poke_pos fame_hall_pokes_pos2[3];
+
+struct fame_hall_pokes_new{
+    u32 TiD;
+    u32 PiD;
+    u16 species;
+    u8 lvl;
+    u8 nick[10];
+    //u8 pad1;
+    //u8 pad2;
+};
+
+struct fame_hall_team_new{
+    struct fame_hall_pokes_new pokes[6];
+    u8 trainerID; //for allowing to have custom entries
+};
+
+extern struct fame_hall_team_new* fame_hall_pokes;
+extern struct fame_hall_team_new (*fame_hall_teams)[FAMEHALL_MAX];
+
+struct famehall_data{
+    u8 unkown;
+};
+
+extern struct famehall_data* fame_hall_data;
+
+union decomp_buffer{
+    u8 bytes[0x2000];
+    struct fame_hall_team_new saved_HOF_pokes[FAMEHALL_MAX];
+};
+
+extern union decomp_buffer decompression_buffer;
+
+enum menu_options{
+    MENU_DEX,
+    MENU_POKE,
+    MENU_BAG,
+    MENU_POKENAV,
+    MENU_TRAINERCARD,
+    MENU_SAVE,
+    MENU_OPTION,
+    MENU_EXIT,
+    MENU_SAFARI_RETIRE,
+    MENU_FRONTIER_CARD,
+    MENU_REST,
+    MENU_FRONTIER_RETIRE,
+    MENU_FRONTIER_BAG,
+};
+
 struct blockset{
     u8 compressed;
     u8 pal_mode_flag;
@@ -129,6 +201,19 @@ struct rbox_rom{
     u8 field5;
     u16 vram_tileset_offset;
 };
+
+struct rbox_ram{
+    u8 bg_id;
+    u8 x_coord;
+    u8 y_coord;
+    u8 width;
+    u8 height;
+    u8 field5;
+    u16 vram_tileset_offset;
+    void* pixels;
+};
+
+extern struct rbox_ram rboxes[16];
 
 struct nature_stat{
     u8 stat[5];
@@ -323,8 +408,8 @@ struct task{
 extern struct task tasks[16];
 
 struct frame {
-  u16 data;
-  u16 duration;
+  u32 field1;
+  u32 field2;
 };
 
 struct rotscale_frame {
@@ -336,10 +421,12 @@ struct rotscale_frame {
 };
 
 struct sprite{
-    u8 y;
+    u8 x;
     u8 flags1;
-    u16 x_and_flag2;
-    u16 attr2;
+    u8 y;
+    u8 flags2;
+    u8 attr1;
+    u8 attr2;
     u16 rotscaleinfo;
 };
 
@@ -416,7 +503,7 @@ struct multichoice_option{
 };
 
 struct multichoice_options{
-    struct multichoice_option* options_ptr;
+    struct multichoice_option *options_ptr;
     u8 no_of_options;
 };
 
@@ -442,6 +529,17 @@ struct item_data{
 };
 
 extern struct item_data* item_table;
+
+struct pokeblock{
+    u8 index;
+    u8 spicy_lvl;
+    u8 dry_lvl;
+    u8 sweet_lvl;
+    u8 bitter_lvl;
+    u8 sour_lvl;
+    u8 feel;
+    u8 unkown;
+};
 
 struct warp{
     u8 map_bank;
@@ -478,5 +576,118 @@ struct saveblock1{
 };
 
 extern struct saveblock1* sav1;
+
+struct saveblock2{
+    u8 name[8];
+    u8 gender;
+    u8 field_9;
+    u8 TiD_1;
+    u8 TiD_2;
+    u8 TiD_3;
+    u8 TiD_4;
+};
+
+extern struct saveblock2* sav2;
+
+struct old_moveset{
+    u16 move : 9;
+    u16 level : 7;
+};
+
+#pragma pack(push,1)
+struct new_moveset{
+    u16 move;
+    u8 level;
+};
+#pragma pack(pop)
+
+#if EXPANDED_LEARNSETS == true
+    extern struct new_moveset* learnsets_table [POKES_NO];
+#else
+    extern struct old_moveset* learnsets_table [POKES_NO];
+#endif // EXPANDED_LEARNSETS
+
+struct ov_script{
+    u8 push_counter;
+    u8 mode;
+    u8 comp_result;
+    u8 padd;
+    void* waiting_routine;
+    void* curr_instruction;
+    void* stack[20];
+    void* commands_table_start;
+    void* commands_table_end;
+    u32 vars [4];
+};
+
+struct button{
+    u16 A : 1;
+    u16 B : 1;
+    u16 SELECT : 1;
+    u16 START : 1;
+    u16 RIGHT : 1;
+    u16 LEFT : 1;
+    u16 UP : 1;
+    u16 DOWN : 1;
+    u16 R : 1;
+    u16 L : 1;
+};
+
+struct superstate{
+    void* callback1;
+    void* callback2;
+    void* callback_backup;
+    void* vblank_callback;
+    void* hblank_callback;
+    void* field14;
+    void* field18;
+    u32 bits_to_wait_for;
+    u32 game_timer;
+    u32 field24;
+    u16 buttons0;
+    u16 buttons1;
+    u16 buttons2;
+    struct button pressed_buttons;
+};
+
+extern struct superstate super;
+
+struct walkrun_state{
+    u8 bitfield;
+    u8 sprite_change;
+    u8 field2;
+    u8 moving;
+    u8 oamID;
+    u8 npcID;
+    u8 lock;
+    u8 gender;
+};
+
+extern struct walkrun_state walkrun;
+
+struct wild_pokemon{
+    u8 min_lvl;
+    u8 max_lvl;
+    u16 species;
+};
+
+extern struct wild_pokemon wild_data_feebas;
+
+struct wild_encounter{
+    u8 encounter;
+    struct wild_pokemon (*poke)[10];
+};
+
+struct wild_poke_data{
+    u8 map_bank;
+    u8 map_no;
+    u16 pad;
+    struct wild_encounter* grass;
+    struct wild_encounter* surfing;
+    struct wild_encounter* rocksmash;
+    struct wild_encounter* fishing;
+};
+
+extern struct wild_poke_data wild_pokemon_data[125];
 
 #endif /* B_STRUCTS */

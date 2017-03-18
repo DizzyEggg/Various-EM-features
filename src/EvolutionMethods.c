@@ -60,6 +60,20 @@ bool attack_def_evo_check(struct pokemon* poke, u8 condition)
     }
 }
 
+#if EEVEE_TABLE == true
+    #define eevee_evos 8
+    struct evolution_sub eevee_table[eevee_evos] =  {
+	{7, ITEM_WATERSTONE, POKE_VAPOREON, 0x00, 0x00},
+	{7, ITEM_THUNDERSTONE, POKE_JOLTEON, 0x00, 0x00},
+	{7, ITEM_FIRESTONE, POKE_FLAREON, 0x00, 0x00},
+	{1, 0, POKE_ESPEON, 0x00, 0x00},
+	{2, 0, POKE_UMBREON, 0x00, 0x00},
+	{17, 0x00, 123, 0x00, 0x00}, // Map ID defs still need to be made
+	{17, 0x00, 123, 0x00, 0x00},
+	{29, TYPE_FAIRY, 124, 0x00, 0x00}, // XX is the index of Sylveon method
+    };
+#endif // EEVEE_TABLE
+
 u16 try_evolving_poke(struct pokemon* poke, enum evo_index index, u16 stoneID)
 {
     u16 held_item = get_attributes(poke, ATTR_HELD_ITEM, 0);
@@ -68,8 +82,16 @@ u16 try_evolving_poke(struct pokemon* poke, enum evo_index index, u16 stoneID)
     u16 species = get_attributes(poke, ATTR_SPECIES, 0);
     u16 lvl = get_attributes(poke, ATTR_LEVEL, 0);
     u32 pid_form = __umodsi3(get_attributes(poke, ATTR_PID, 0) >> 0x10, 10);
+
     struct evolution_sub* evos = (*evo_table)[species];
-    for (u8 i = 0; i < EVO_PER_POKE; i++)
+    u8 evos_num = EVO_PER_POKE;
+    //check eevee
+    if (EEVEE_TABLE == true && species == POKE_EEVEE)
+    {
+        evos = eevee_table;
+        evos_num = eevee_evos;
+    }
+    for (u8 i = 0; i < evos_num; i++)
     {
         struct evolution_sub* evo = &evos[i];
         u8 evolving = 0;
@@ -211,6 +233,17 @@ u16 try_evolving_poke(struct pokemon* poke, enum evo_index index, u16 stoneID)
         case 28: //female by stone
             if (poke_get_gender(poke) == 0xFE)
                 goto STONE_EVO;
+            break;
+        case 29: //level up when knows move of a type
+            for (u8 i = 0; i < 4; i++)
+            {
+                u16 move = get_attributes(poke, ATTR_ATTACK_1 + i, 0);
+                if (move && (*move_table)[move].type == evo->paramter)
+                {
+                    evolving = 1;
+                    break;
+                }
+            }
             break;
         }
         if (evolving)
