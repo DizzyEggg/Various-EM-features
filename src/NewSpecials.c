@@ -255,9 +255,9 @@ void sp21F_text_moving(struct ov_script* script) //8004 = text speed, 8 - slow, 
     }
 }
 
-void sp220_give_pokeblock(struct ov_script* script) //arg pokeblock ptr
+bool sp220_give_pokeblock(struct ov_script* script) //arg pokeblock ptr
 {
-    var_800D_lastresult = pokeblock_give((void*)(script_read_word(script)));
+    return pokeblock_give((void*)(script_read_word(script)));
 }
 
 u8 sp221_create_rbox() //X pos, Y pos, width, height
