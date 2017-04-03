@@ -34,6 +34,7 @@ get_egg_moves = 0x080703C8|1;
 script_read_halfword = 0x08098E0C|1;
 script_read_word = 0x08098E24|1;
 get_var_address = 0x0809D648|1;
+get_var_value = 0x0809D694|1;
 prepare_string_inserter = 0x080E2D78|1;
 script_exec_return_with_music = 0x080AF168|1;
 sub_81972C4 = 0x81972C4|1;
@@ -115,6 +116,14 @@ fame_hall_pc_put_text = 0x08198204|1;
 party_move_up_no_free_slots_in_between = 0x080CE90C|1;
 set_poke_to_lvl = 0x081D642C|1;
 get_pokemon_nature = 0x0806D070|1;
+get_frontier_opponent_class = 0x08162BD8|1;
+oe_exec = 0x080B5B18|1;
+npc_change_sprite = 0x0808E3F8|1;
+npc_turn = 0x0808E544|1;
+get_npc_state_id_by_local_id = 0x0808D608|1;
+gpu_tile_obj_alloc_tag_and_upload = 0x080084F8|1;
+gpu_pal_obj_alloc_tag_and_apply = 0x08008744|1;
+template_instanciate = 0x08006DF4|1;
 
 poke_summary = 0x0203CF1C;
 script_text_buff1 = 0x02021CC4;
@@ -149,8 +158,13 @@ sav_ret_state = 0x030061FC;
 text_HALL_OF_FAME_NO = 0x085E8C00;
 text_PICK_CANCEL = 0x085E8574;
 text_PICK_NEXT_CANCEL = 0x085E855C;
+text_WALLY = 0x085CCB98;
 move_table = 0x080001CC;
 rboxes = 0x02020004;
+oe_arguments = 0x02038C08;
+npc_states = 0x02037350;
+bag_item_template = 0x08614FF4;
+
 
 OBJ_PaletteMem = 0x02037914;
 OBJ_PaletteMem2 = 0x02037D14;

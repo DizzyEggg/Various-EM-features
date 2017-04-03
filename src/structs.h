@@ -4,6 +4,12 @@
 #include "types.h"
 #include "defines.h"
 
+struct tile_obj{
+    void* tile_ptr;
+    u16 size;
+    u16 tileID;
+};
+
 struct move_info{
     u8 scriptID;
     u8 power;
@@ -365,8 +371,7 @@ struct poke_basestats{
     u8 ability2;
     u8 safari_flee_rate;
     u8 dex_colour;
-    u8 padding1;
-    u8 padding2;
+    u16 padding;
 };
 
 extern struct poke_basestats (*basestat_table)[POKES_NO];
@@ -689,5 +694,38 @@ struct wild_poke_data{
 };
 
 extern struct wild_poke_data wild_pokemon_data[125];
+
+struct npc_state{
+    u8 field0;
+    u8 field1;
+    u8 field2;
+    u8 field3;
+    u8 oam_id;
+    u8 spriteID;
+    u8 movement_type;
+    u8 localID;
+    u8 map_no;
+    u8 map_bank;
+    u8 height;
+    u8 field_C;
+    u16 pos_x;
+    u16 pox_y;
+    u16 pos_x_plus7;
+    u16 pos_y_plus7;
+    u8 walking_direction;
+    u8 field_19;
+    u8 field_1A;
+    u8 field_1B;
+    u8 field_1C;
+    u8 plantID;
+    u8 field_1E;
+    u8 field_1F;
+    u8 field_20;
+    u8 field_21;
+    u8 field_22;
+    u8 field_23;
+};
+
+extern struct npc_state npc_states[16];
 
 #endif /* B_STRUCTS */

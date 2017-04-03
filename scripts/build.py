@@ -3,7 +3,8 @@
 #To Edit
 BWRepel = 				False
 #next feature
-WildMusic = 			False
+WildPokeBattleMusic = 	False
+TrainerMusicVar = 0x0	#a var of your choice, if it's 0 music plays normally, other value will make that music play
 #next feature
 EVTrainers = 			False
 #next feature
@@ -11,6 +12,7 @@ MoreMoney = 			False
 #next feature
 NewEvolutionMethods = 	False
 EvosPerPoke =			5		#Number of evolutions per pokemon in your rom hack
+EeveeTable =			False	#will create an additional table for eevee evolution, so that you dont have to expand evolutions to 8 slots
 #next feature
 BallsExpansion = 		False
 FirstNewBallID = 		226		#item ID of your first new ball, you need 15 free consecutive item slots
@@ -19,7 +21,7 @@ FishingFlag = 	0x0 	#a flag of your choice, works as a way to make game know tha
 NatureStatColor = 		False
 #next feature
 MoreLevels =			False
-MaxLevel = 				250		#Maximal level avaiable
+MaxLevel = 				250		#Maximal level available
 #next feature
 NewSpecials = False #new special commands
 Tutors_Number = 32 						#number of move tutors in your game
@@ -46,6 +48,7 @@ FishingFlag = 0x0 	#a flag of your choice, works as a way to make game know that
 ShinyCharm = 0x0 #set to item ID if you want to have that item in your hack
 #next feature
 HallofFameFix = False #set to true if you want to be able to have expanded pokemon properly displayed in the hall of fame
+#next feature
 
 insert_offset = 0xFF0000 	#Offset as to where insert data
 rom_name = "BPEE0.gba"		#Name of your rom
@@ -179,6 +182,12 @@ def edit_defines():
 			newval = hex(FishingFlag)
 		elif name == "SHINY_CHARM":
 			newval = hex(ShinyCharm)
+		elif name == "EEVEE_TABLE":
+			newval = bool_to_string(EeveeTable)
+		elif name == "TRAINER_BATTLE_MUSIC_VAR":
+			newval = hex(TrainerMusicVar)
+		elif name == "CUSTOM_WILD_POKE_MUSIC":
+			newval = hex(WildPokeBattleMusic)
 		elif MenuOptionsControl == True:
 			if name == "DEX_MENU_FLAG":
 				newval = hex(FlagPokedex)
@@ -226,8 +235,8 @@ def build_script():
 		globs['MoreMoney.c'] = process_c
 	if EVTrainers == True:
 		globs['EVTrainers.c'] = process_c
-	if WildMusic == True:
-		globs['WildPokeMusic.s'] = process_assembly
+	if WildPokeBattleMusic == True or TrainerMusicVar != 0x0:
+		globs['BattleMusic.c'] = process_c
 	if BWRepel == True:
 		globs['Repel_Code.c'] = process_c
 		globs['Repel_Script.s'] = process_assembly
@@ -429,8 +438,8 @@ def insert_script(rom):
 		hook(rom, table["prepare_money_box"], 0x0E51F4, 3)
 	if EVTrainers == True:
 		hook(rom, table["create_trainer_pokemon"], 0x0385E8, 3)
-	if WildMusic == True:
-		hook(rom, table["WILD_POKE_MUSIC"], 0x06E466, 2)
+	if WildPokeBattleMusic == True or TrainerMusicVar != 0x0:
+		hook(rom, table["choose_song_for_battle"], 0x06E42C, 0)
 	if MoreLevels == True:
 		hook(rom, table["display_exp_instatssummary"], 0x1C38C0, 0)
 		hook(rom, table["LEVELUP_MORE_DIGITS"], 0x1D37FA, 2)

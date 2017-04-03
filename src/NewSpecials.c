@@ -502,11 +502,18 @@ u8 sp22B_givecustompoke()
     return ret;
 }
 
+void sp22C_hero_sprite_change(void)
+{
+    struct npc_state* player_npc = &npc_states[walkrun.npcID];
+    npc_change_sprite(player_npc, var_8004);
+    npc_turn(player_npc->walking_direction >> 4);
+}
+
 void* new_specials_table[] = {sp20F_check_move_comp, sp210_get_attr, sp211_set_attr, sp212_ability_switcher, sp213_add_safariballs, sp214_add_safaristeps, sp215_set_player_nick,
 sp216_set_timer, sp217_get_timer, sp218_buffer_timer, sp219_stop_timer, sp21A_continue_timer, sp21B_new_multichoice,
 sp21C_prepare_multichoice, sp21D_add_to_multichoice, sp21E_display_multichoice, sp21F_text_moving, sp220_give_pokeblock, sp221_create_rbox,
 sp222_puttext_on_rbox, sp223_delete_rbox, sp224_delete_pokemon, sp225_set_lvl, sp226_setword, sp227_getattr2, sp228_setattr2,
-sp229_createpokemon, sp22A_custompoke_setattr, sp22B_givecustompoke};
+sp229_createpokemon, sp22A_custompoke_setattr, sp22B_givecustompoke, sp22C_hero_sprite_change};
 
 bool s25_special(struct ov_script* script)
 {

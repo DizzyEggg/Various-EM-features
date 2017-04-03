@@ -13,16 +13,65 @@ enum overworld_weather{
     SANDSTORM,
 };
 
+enum trainer_class{
+    CLASS_PKMN_TRAINER0, //0
+    CLASS_PKMN_TRAINER1, //1
+    CLASS_HIKER, //2
+    CLASS_TEAM_AQUA, //3
+    CLASS_PKMN_BREEDER, //4
+    CLASS_COOLTRAINER, //5
+    CLASS_BIRDKEEPER, //6
+    CLASS_COLLECTOR, //7
+    CLASS_SWIMMER_MALE, //8
+    CLASS_TEAM_MAGMA, //9
+    CLASS_EXPERT, //xA
+    CLASS_AQUA_ADMIN, //xB
+    CLASS_BLACK_BELT, //xC
+    CLASS_AQUA_LEADER, //xD
+    CLASS_HEX_MANIAC, //xE
+    CLASS_AROMA_LADY, //xF
+    CLASS_RUIN_MANIAC, //x10
+    CLASS_INTERVIEWER, //x11
+    CLASS_TUBER_FEMALE, //x12
+    CLASS_TUBER_MALE, //x13
+    CLASS_LADY, //x14
+    CLASS_BEAUTY, //x15
+    CLASS_RICH_BOY, //x16
+    CLASS_POKEMANIAC, //x17
+    CLASS_GUITARIST, //x18
+    CLASS_KINDLER, //x19
+    CLASS_CAMPER, //x1A
+    CLASS_PICKNICKER, //x1B
+    CLASS_BUG_MANIAC, //x1C
+    CLASS_PSYCHIC, //x1D
+    CLASS_GENTLEMAN, //x1E
+    CLASS_ELITE_FOUR, //x1F
+    CLASS_LEADER, //x20
+    CLASS_CHAMPION = 0x26,
+    CLASS_MAGMA_ADMIN = 0x31,
+    CLASS_PKMN_TRAINER_RIVAL = 0x32,
+    CLASS_MAGMA_LEADER = 0x35,
+    CLASS_DOME_ACE = 0x3B,
+    CLASS_PALACE_MAVEN, //0x3C
+    CLASS_ARENA_TYCOON, //0x3D
+    CLASS_FACTORY_HEAD, //0x3E
+    CLASS_PIKE_QUEEN, //0x3F
+    CLASS_PYRAMID_KING, //0x40
+    CLASS_PKMN_TRAINER2, //0x41
+};
+
 #define REPEL_X 0
 #define REPEL_Y 0
 
 #define POKES_NO        442
 #define EVO_PER_POKE		5
-#define EEVEE_TABLE     true
+#define EEVEE_TABLE		true
 #define ALL_ITEMS       386
 #define MAX_LEVEL		250
 #define MORELEVELS      true
-#define COLORED_STATS		false
+#define CUSTOM_WILD_POKE_MUSIC		0x1
+#define TRAINER_BATTLE_MUSIC_VAR		0x8004
+#define COLORED_STATS		true
 #define BALL_EXPANSION  true
 #define FIRST_NEW_BALL_ID		226
 #define LAST_OLD_BALL_ID    0xC
@@ -32,7 +81,7 @@ enum overworld_weather{
 
 #define NO_OF_TUTORS		32
 #define NO_OF_TMS_HMS		58
-#define EXPANDED_LEARNSETS		true
+#define EXPANDED_LEARNSETS		false
 
 #define FAMEHALL_MAX 40
 
@@ -54,8 +103,8 @@ enum overworld_weather{
 #define OPTIONS_MENU_FLAG		0x0
 
 #define BW_REPEL		true
-#define FIRERED_FISHING		false
-#define CHAIN_FISHING		false
+#define FIRERED_FISHING		true
+#define CHAIN_FISHING		true
 #define SHINY_CHARM		0x0
 #define FISHING_FLAG		0x0
 
@@ -201,6 +250,24 @@ enum ball_stars{
 #define z_ 0xEE
 
 #endif /* DEFINES_H */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

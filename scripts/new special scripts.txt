@@ -1,3 +1,129 @@
+Specials:
+
+0x20F check move compatibility
+Args: pokeID, moveID, to_check
+Returns: bitfield of moves that can learn set in to_check
+
+
+0x210 get attributes
+Args: pokeID, attribute
+Returns: attribute
+
+0x211 set attributes
+Args: pokeID, attribute, new value
+Returns: nothing
+
+0x212 ability switcher
+Args: pokeID
+Returns: 0 if didnt switch, because has only one ability, otherwise 1
+
+0x213 safariballs adder
+Args: amount to add/sub
+Returns: nothing
+
+0x214 safaristep adder
+Args: amount to add/sub
+Returns: nothing
+
+0x215 set player nick
+Args: none
+Returns: nothing
+Stores in 0x800D 0 if didnt change name, otherwise 1
+
+0x216 set timer
+Args: none
+Returns: nothing
+
+0x217 get timer
+Args: none
+Returns: time that passed in seconds
+
+0x218 buffer timer
+Args: none
+Returns: nothing
+
+0x219 stop timer
+Args: none
+Returns: nothing
+
+0x21A continue timer
+Args: none
+Returns: nothing
+
+0x21B new multichoice
+Args: no of options, pos X, pos Y
+PointerArgs: option text pointers (amount of them depends on the first argument)
+Returns: nothing
+
+0x21C prepare multichoice
+Args: none
+Returns: nothing
+
+0x21D add to prepared multichoice
+Args: no of options to add
+PointerArgs: option text pointers (amount of them depends on the first argument)
+Returns: nothing
+
+0x21E display prepared multichoice
+Args: posX, posY
+Returns: nothing
+
+0x21F display next message with text moving on its own
+Args: text speed(8 - slow, 4 - medium, 1 - fast, 0xFFFF use the one in the menu options)
+PointerArgs: pointer to text message
+Returns: nothing
+
+0x220 give pokeblock
+Args: none
+PointerArgs: pointer to pokeblock data
+Returns: 1 if pokeblock was given, 0 if no room for it
+
+0x221 create rbox
+Args: pos X, pos Y, width, height
+Returns: rboxID
+
+0x222 put text on rbox
+Args: rboxID
+PointerArgs: pointer to text message
+Returns: nothing
+
+0x223 delete rbox
+Args: rboxID
+Returns: nothing
+
+0x224 delete pokemon
+Args: pokeID
+Returns: nothing
+
+0x225 set lvl
+Args: pokeID, new level
+Returns: old level poke had
+
+0x226 setword
+Args: none
+PointerArgs: word to write, destination
+Returns: nothing
+
+0x227 get attributes2
+Args: pokeID, case(0 = nature, 1 = gender, 2 = shininess)
+Returns: value or 0xFFFF if the case was wrong
+
+0x228 set attributes2
+Args: pokeID, nature(0xFF to keep the current one), gender (0xFF to keep the current one), shininess
+Returns: nothing
+
+0x229 create custom pokemon
+Args: species, lvl, nature (0xFF random). shininess
+Returns: nothing
+
+0x22A set attributes of custom pokemon
+Args: attribute, new value
+Returns: nothing
+
+0x22B give custom pokemon
+Args: none
+Returns: 0 - poke was given to party, 1 - poke was transferred to PC, 2 - not enough space, poke could not be given
+
 Rboxes script:
 
 #dynamic 0xFC0000
