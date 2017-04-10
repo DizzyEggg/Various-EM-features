@@ -1,10 +1,5 @@
 #include "defines.h"
 
-const struct trainer_data trainer_table_new[] = {
-  //cst moves, cst item
-    {1, 1, CLASS_BUG_MANIAC, 0, 1, 4, {R_, i_, c_, k_, y_, 0xFF}, 0, {0}, 0, {0}, 1, },
-};
-
 struct poke_config config_table[255] = {
     {{252, 252, 252, 252, 252, 252}, {31, 31, 31, 31, 31, 31}, 1, 1, 1},
 };
