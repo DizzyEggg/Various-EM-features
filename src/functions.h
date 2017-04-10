@@ -142,6 +142,8 @@ u8 get_npc_state_id_by_local_id(u8 localID);
 u16 gpu_tile_obj_alloc_tag_and_upload(struct tile_obj*);
 u16 gpu_pal_obj_alloc_tag_and_apply(struct tile_pal*);
 u8 template_instanciate(struct template*, u16 x, u16 y, u8 priority);
+u8 showsprite(u8 localID, u8 mapNO, u8 mapBank);
+u8 hidepsrite(u8 localID, u8 mapNO, u8 mapBank);
 
 void gpu_pal_apply(struct palette* src, u16 index, u16 num_colours);
 void gpu_pal_decompress_apply(struct palette* src, u16 index, u16 num_colours);

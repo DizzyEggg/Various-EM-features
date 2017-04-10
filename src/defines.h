@@ -69,15 +69,19 @@ enum trainer_class{
 #define ALL_ITEMS       386
 #define MAX_LEVEL		250
 #define MORELEVELS      true
-#define CUSTOM_WILD_POKE_MUSIC		0x1
-#define TRAINER_BATTLE_MUSIC_VAR		0x8004
-#define COLORED_STATS		true
+#define CUSTOM_WILD_POKE_MUSIC		0x0
+#define TRAINER_BATTLE_MUSIC_VAR		0x0
+#define COLORED_STATS		false
 #define BALL_EXPANSION  true
 #define FIRST_NEW_BALL_ID		226
 #define LAST_OLD_BALL_ID    0xC
 #define BALLS_AMOUNT    0x1A
 #define NEWBALLS_TILE   0xF100
 #define NEWBALLS_STARS  0xF120
+
+#define NEWFLAGS		0x0
+#define NEWVARS 0x6
+#define USEOLD_DEX_FLAGS true
 
 #define NO_OF_TUTORS		32
 #define NO_OF_TMS_HMS		58
@@ -102,9 +106,9 @@ enum trainer_class{
 #define TRAINERCARD_MENU_FLAG		0x0
 #define OPTIONS_MENU_FLAG		0x0
 
-#define BW_REPEL		true
-#define FIRERED_FISHING		true
-#define CHAIN_FISHING		true
+#define BW_REPEL		false
+#define FIRERED_FISHING		false
+#define CHAIN_FISHING		false
 #define SHINY_CHARM		0x0
 #define FISHING_FLAG		0x0
 
@@ -250,6 +254,9 @@ enum ball_stars{
 #define z_ 0xEE
 
 #endif /* DEFINES_H */
+
+
+
 
 
 

@@ -12,7 +12,7 @@ MoreMoney = 			False
 #next feature
 NewEvolutionMethods = 	False
 EvosPerPoke =			5		#Number of evolutions per pokemon in your rom hack
-EeveeTable =			False	#will create an additional table for eevee evolution, so that you dont have to expand evolutions to 8 slots
+EeveeTable =			True	#will create an additional table for eevee evolution, so that you dont have to expand evolutions to 8 slots
 #next feature
 BallsExpansion = 		False
 FirstNewBallID = 		226		#item ID of your first new ball, you need 15 free consecutive item slots
@@ -48,6 +48,12 @@ FishingFlag = 0x0 	#a flag of your choice, works as a way to make game know that
 ShinyCharm = 0x0 #set to item ID if you want to have that item in your hack
 #next feature
 HallofFameFix = False #set to true if you want to be able to have expanded pokemon properly displayed in the hall of fame
+#next feature
+FlagsVarsExpansion = True #set to true if you want to expand flags
+FlagsVarsOffset = 0x0203CF64		#set to the location of your expanded saveblock
+NoOfNewFlags = 0x0 			#number of your new flags
+NoOfNewVars = 0x0			#number of your new vars
+ReuseOldDexFlags = True		#set to true only after dex expansion, allows you to have additional 1664 flags that were used as the original seen/caught flags
 #next feature
 
 insert_offset = 0xFF0000 	#Offset as to where insert data
@@ -188,6 +194,12 @@ def edit_defines():
 			newval = hex(TrainerMusicVar)
 		elif name == "CUSTOM_WILD_POKE_MUSIC":
 			newval = hex(WildPokeBattleMusic)
+		elif name == "NEWFLAGS":
+			newval = hex(NoOfNewFlags)
+		elif name == "NEWVARS":
+			newval == hex(NoOfNewVars)
+		elif name == "USEOLD_DEX_FLAGS":
+			newval == bool_to_string(ReuseOldDexFlags)
 		elif MenuOptionsControl == True:
 			if name == "DEX_MENU_FLAG":
 				newval = hex(FlagPokedex)
@@ -217,13 +229,31 @@ def edit_linker():
 	linker.seek(0x0)
 	line_no = 1
 	for line in linker:
-		if (line_no == 4):
+		if line_no == 4:
 			copy = copy.replace(line, "\t\trom     : ORIGIN = (0x08000000 + " + hex(insert_offset) + "), LENGTH = 32M\n")
 			break
 		line_no += 1
 	linker.seek(0x0)
 	linker.write(copy)
 	linker.close()
+	
+def edit_bpee():
+	bpee = open("BPEE.ld", 'r+')
+	copy = bpee.read()
+	bpee.seek(0x0)
+	for line in bpee:
+		try:
+			label, equal_sign, address = line.split()
+		except:
+			continue
+		new_address = ""
+		if label == "new_saveblock":
+			new_address = hex(FlagsVarsOffset)
+		if new_address != "":
+			copy = copy.replace(line, label + ' ' + equal_sign + ' ' + new_address + ';\n')
+	bpee.seek(0x0)
+	bpee.write(copy)
+	bpee.close()
 	
 def build_script():
 	#erase build folder if it exists
@@ -262,6 +292,8 @@ def build_script():
 	if HallofFameFix == True:
 		globs["HallOfFame.c"] = process_c
 		globs["HallOfFame.s"] = process_assembly
+	if FlagsVarsExpansion == True:
+		globs["FlagsVarsExpansion.c"] = process_c
 	#check if at least one file is being built
 	if not globs:
 		print("No feature chosen.")
@@ -270,6 +302,8 @@ def build_script():
 	edit_defines()
 	#change offset in linker file
 	edit_linker()
+	#edit bpee linker
+	edit_bpee()
 	# Create output directory
 	try:
 		os.makedirs(BUILD)
@@ -470,6 +504,9 @@ def insert_script(rom):
 		hook(rom, table["fame_hall_read_pokes_from_sav"], 0x174324, 1)
 		hook(rom, table["fame_hall_pc_poke_data_display"], 0x1745FC, 1)
 		hook(rom, table["fame_hall_pc_display_poke_sprites"], 0x1743EC, 1)
+	if FlagsVarsExpansion == True:
+		hook(rom, table["get_flag_address_new"],  0x09D6EC, 1)
+		hook(rom, table["get_var_address_new"],  0x09D648, 1)
 		
 	# Insert repoints
 	if BWRepel == True:

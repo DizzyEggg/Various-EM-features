@@ -1,5 +1,10 @@
 #include "defines.h"
 
+const struct trainer_data trainer_table_new[] = {
+  //cst moves, cst item
+    {1, 1, CLASS_BUG_MANIAC, 0, 1, 4, {R_, i_, c_, k_, y_, 0xFF}, 0, {0}, 0, {0}, 1, },
+};
+
 struct poke_config config_table[255] = {
     {{252, 252, 252, 252, 252, 252}, {31, 31, 31, 31, 31, 31}, 1, 1, 1},
 };
@@ -8,7 +13,7 @@ void create_trainer_pokemon(struct pokemon* poke, u16 trainerID, u8 purge)
 {
     if (trainerID != 0x400 && battle_flags.trainer && !(BATTLE_FRONTIER_BATTLE || battle_flags.flagx800 || battle_flags.flag_x4000000))
     {
-        struct trainer_data* trainer = &trainer_table[trainerID];
+        struct trainer_data* trainer = &(*trainer_table)[trainerID];
         if (purge)
             pokemon_purge_opponent();
         u8 no_of_pokes = trainer->poke_number;
@@ -65,3 +70,4 @@ void create_trainer_pokemon(struct pokemon* poke, u16 trainerID, u8 purge)
             battle_flags.double_battle = 1;
     }
 }
+

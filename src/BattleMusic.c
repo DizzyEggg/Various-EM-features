@@ -36,7 +36,7 @@ u16 choose_song_depending_on_class(enum trainer_class class, u16 trainerID)
         songID = 0x1DE;
         break;
     case CLASS_PKMN_TRAINER_RIVAL:
-        if (BATTLE_FRONTIER_BATTLE || !(compare_two_strings(trainer_table[trainerID].name, text_WALLY)))
+        if (BATTLE_FRONTIER_BATTLE || !(compare_two_strings((*trainer_table)[trainerID].name, text_WALLY)))
         {
             songID = 0x1E1;
             break;
@@ -68,7 +68,7 @@ u16 choose_song_for_battle()
             else if (battle_flags.flag_x4000000)
                 class = 0xA;
             else
-                class = trainer_table[trainerID].class;
+                class = (*trainer_table)[trainerID].class;
             songID = choose_song_depending_on_class(class, trainerID);
         }
     }

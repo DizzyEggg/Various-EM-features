@@ -46,5 +46,7 @@ u8 text_PICK_NEXT_CANCEL[24];
 u32 damage_loc;
 u32 oe_arguments[8];
 struct template bag_item_template;
+u8 flags_x4000[0x10];
+u16* vars_8000[22];
 
 #endif /* B_LOCATIONS */

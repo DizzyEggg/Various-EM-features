@@ -7,6 +7,7 @@ learnsets_table = 0x8F4A6A8;
 custom_timer = 0x0203FFF8;
 timer_helper = 0x0203FFF4;
 last_fishing_loc = 0x0203FFEE;
+new_saveblock = 0x203cf64;
 
 pokemon_purge_opponent = 0x08067B2C|1;
 pokemon_slot_purge = 0x08067A8C|1;
@@ -124,6 +125,8 @@ get_npc_state_id_by_local_id = 0x0808D608|1;
 gpu_tile_obj_alloc_tag_and_upload = 0x080084F8|1;
 gpu_pal_obj_alloc_tag_and_apply = 0x08008744|1;
 template_instanciate = 0x08006DF4|1;
+showsprite = 0x0808DCAC|1;
+hidepsrite = 0x0808D8C4|1;
 
 poke_summary = 0x0203CF1C;
 script_text_buff1 = 0x02021CC4;
@@ -164,6 +167,8 @@ rboxes = 0x02020004;
 oe_arguments = 0x02038C08;
 npc_states = 0x02037350;
 bag_item_template = 0x08614FF4;
+flags_x4000 = 0x020375FC;
+vars_8000 = 0x081DBA0C;
 
 
 OBJ_PaletteMem = 0x02037914;
@@ -496,7 +501,7 @@ item_table = 0x80001C8;
 evo_table = 0x806D140;
 basestat_table = 0x80001BC;
 poke_name_table = 0x08000144;
-trainer_table = 0x08310030;
+trainer_table = 0x080619C8;
 
 /*Expandable tables*/
 battle_strings_table = 0x085CC270;

@@ -4,6 +4,17 @@
 #include "types.h"
 #include "defines.h"
 
+struct newsaveblock{
+    #if NEWFLAGS > 0
+        u8 new_flags[NEWFLAGS / 8];
+    #endif // NEWFLAGS
+    #if NEWVARS > 0
+        u16 new_vars[NEWVARS];
+    #endif // NEWVARS
+};
+
+extern struct newsaveblock new_saveblock;
+
 struct tile_obj{
     void* tile_ptr;
     u16 size;
@@ -328,7 +339,7 @@ struct trainer_data{
     struct poke_trainer_data* poke_data;
 };
 
-extern struct trainer_data trainer_table[];
+extern struct trainer_data (*trainer_table)[];
 
 struct pal_poke{
     void* pal;
@@ -554,6 +565,93 @@ struct warp{
     u16 field6;
 };
 
+struct owned_items{
+    u16 itemID;
+    u16 amount;
+};
+
+struct rom_npc{
+    u8 localID; //0
+    u8 spriteID; //1
+    u16 field2; //2
+    s16 x_pos; //4
+    s16 y_pos; //6
+    u8 height; //8
+    u8 behaviour;//9
+    u16 behaviour_property;// xA
+    u8 is_trainer; //xC
+    u8 fieldD; //xD
+    u16 radius_plantID; //xE
+    void* script; //x10
+    u16 flag; //x14
+    u16 field16; //x16
+};
+
+struct planted_berry{
+    u8 berryID;
+    u8 state;
+    u16 minutes_stage;
+    u8 yield;
+    u8 watered;
+    u8 field6;
+    u8 field7;
+};
+
+struct secret_base{
+    u8 baseID; //0
+    u8 owner_state; //1
+    u8 owner_name[7]; //2
+    u8 trainerID[4]; //9
+    u8 font; //xD
+    u16 fieldE; //xE
+    u8 enters; //x10
+    u8 field11; //x11
+    u8 used_decorationsID[16]; //x12
+    u8 decoration_positions[16];
+    u8 field32;
+    u8 field33;
+    u32 PiD[6];
+    u16 moves[6][4];
+    u16 species[6];
+    u16 held_items[6];
+    u8 levels[6];
+    u8 evs[6];
+};
+
+struct npc_state{
+    u8 field0; //0
+    u8 field1; //1
+    u8 field2; //2
+    u8 field3; //3
+    u8 oam_id; //4
+    u8 spriteID; //5
+    u8 movement_type;// 6
+    u8 walking_type; //7
+    u8 localID; //8
+    u8 map_no; //9
+    u8 map_bank; //xA
+    u8 height; //xB
+    u32 field_C; //xC
+    u16 pos_x; //x10
+    u16 pox_y;
+    u16 pos_x_plus7;
+    u16 pos_y_plus7;
+    u8 walking_direction;
+    u8 field_19;
+    u8 field_1A;
+    u8 field_1B;
+    u8 field_1C;
+    u8 plantID;
+    u8 field_1E;
+    u8 field_1F;
+    u8 field_20;
+    u8 field_21;
+    u8 field_22;
+    u8 field_23;
+};
+
+extern struct npc_state npc_states[16];
+
 struct saveblock1{
     s16 x_coords;
     s16 y_coords;
@@ -576,8 +674,30 @@ struct saveblock1{
     u8 alignment_padding[3];
     struct pokemon player_party[6];
     u32 money;
-    u16 coints;
+    u16 coins;
     u16 item_on_select;
+    struct owned_items PC_items[50];
+    struct owned_items items_pocket[30];
+    struct owned_items key_items_pocket[30];
+    struct owned_items balls_pocket[16];
+    struct owned_items tms_pocket[64];
+    struct owned_items berries_pocket[46];
+    struct pokeblock pokeblocks[40];
+    u8 seenflags_1[52];
+    u16 berry_blending_results[3];
+    u16 field_9C2[3];
+    u16 step_counter_to_xFF;
+    u8 pokenav_matchcall[64];
+    u8 field_A0A[38];
+    struct npc_state npc_states_rom[16];
+    struct rom_npc map_npcs[64];
+    u8 flags[300];
+    u16 vars[256];
+    u32 encrypted_counters[64];
+    struct planted_berry planted_berries[128];
+    struct secret_base secret_bases[20];
+    u8 field_271C[5128];
+    u8 seenflags_2[52];
 };
 
 extern struct saveblock1* sav1;
@@ -590,6 +710,24 @@ struct saveblock2{
     u8 TiD_2;
     u8 TiD_3;
     u8 TiD_4;
+    u16 hours_played;
+    u8 mintues_played;
+    u8 seconds_played;
+    u8 frames_played;
+    u8 buttons_style;
+    u8 txt_speed_frame;
+    u8 battle_scene_style_sound;
+    u8 field16;
+    u8 field17;
+    u8 dex_order;
+    u8 dex_mode;
+    u8 national_dex;
+    u8 field1B;
+    u32 unown_PiD;
+    u32 spinda_PiD;
+    u8 field24[4];
+    u8 caught_flags[52];
+    u8 seen_flags[52];
 };
 
 extern struct saveblock2* sav2;
@@ -694,38 +832,5 @@ struct wild_poke_data{
 };
 
 extern struct wild_poke_data wild_pokemon_data[125];
-
-struct npc_state{
-    u8 field0;
-    u8 field1;
-    u8 field2;
-    u8 field3;
-    u8 oam_id;
-    u8 spriteID;
-    u8 movement_type;
-    u8 localID;
-    u8 map_no;
-    u8 map_bank;
-    u8 height;
-    u8 field_C;
-    u16 pos_x;
-    u16 pox_y;
-    u16 pos_x_plus7;
-    u16 pos_y_plus7;
-    u8 walking_direction;
-    u8 field_19;
-    u8 field_1A;
-    u8 field_1B;
-    u8 field_1C;
-    u8 plantID;
-    u8 field_1E;
-    u8 field_1F;
-    u8 field_20;
-    u8 field_21;
-    u8 field_22;
-    u8 field_23;
-};
-
-extern struct npc_state npc_states[16];
 
 #endif /* B_STRUCTS */
