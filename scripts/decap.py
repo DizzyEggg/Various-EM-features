@@ -3,49 +3,52 @@
 rom_name = "BPEE0.gba"		#Name of your rom
 copy_name = "test.gba"		#Name of the created rom
 
-PERSON_EVENTS = True		#All text said by NPCs
-SIGNPOSTS = True			#All in-game signs
-TRIGGER_SCRIPTS = True		#All text in scripts
-LEVEL_SCRIPTS = True		#Decap all text in level scripts
-PC_OPTIONS = True			#Decap Box PC Options
-MENU_OPTIONS = True			#Decap Menu Options
-NATURES = True				#Decap Nature Names
-BAG_OPTIONS = True			#Decap Bag Options
-DEFAULT_NAMES = True     	#Male and Female default names
-STAT_NAMES = True			#Decap Stat names
-POKEBLOCK_NAMES = True		#Decap Pokeblock names
-POKEMART_OPTIONS = True		#Decap Mart Options
-POKEMON_TEXT = True			#'POKEMON' text
-ITEM_NAMES = True			#Various item names, not item table
-BERRY_DESCRIPTIONS = True	#Desciprtions of Berries in 'check tag'
-POKE_MENU = True			#Things related to pokemon menu
-CANCEL = True				#Various instances of word 'cancel'
-OPTIONS = True				#Text Speed, Buttons, etc.
-YESNO = True				#Yes, No text
-SAVE_MENU = True			#Text that appears when you save the game
-TRAINERCARD = True			#Various texts in the trainer card
-CONTEST_DESC = True			#Move's contest descriptions
-NEWGAME_OPTIONS = True		#New game, Continue, etc.
-BOYGIRL = True				#Boy/Girl text
-MULTICHOICES = True			#All Multichoice boxes
-STD_TABLE = True			#scripting std table
-TV_REPORTS = True			#Decap Tv Reports
-GABBY_TV_REPORTS = True		#TV Reports brought to you by Gabby lol
-DEX_DESCRIPTIONS = True		#Decap Pokemon descriptions in dex
-BATTLE_STRINGS = True		#Decap all battle strings
-ITEMS = True				#Decap item names and item descriptions
-TRAINER_CLASSES = True		#Decap all trainer classes
-BIRCH_INTRO = True			#Decap Birch Intro
-MAP_NAMES = True			#Decap Map Names
-TRAINER_NAMES = True		#Decap All Trainer Names
-FD_OVERWORLD = True			#Special character FD in overworld
-DEX_MENU = True				#Decap stuff in pokedex
+PERSON_EVENTS = False		#All text said by NPCs
+SIGNPOSTS = False			#All in-game signs
+TRIGGER_SCRIPTS = False		#All text in scripts
+LEVEL_SCRIPTS = False		#Decap all text in level scripts
+ADDITIONAL_SCRIPTS = False		#Scripts that are called by the game functions and arent related to events
+PC_OPTIONS = False			#Decap Box PC Options
+MENU_OPTIONS = False			#Decap Menu Options
+NATURES = False				#Decap Nature Names
+BAG_OPTIONS = False			#Decap Bag Options
+DEFAULT_NAMES = False     	#Male and Female default names
+STAT_NAMES = False			#Decap Stat names
+POKEBLOCK_NAMES = False		#Decap Pokeblock names
+POKEMART_OPTIONS = False		#Decap Mart Options
+POKEMON_TEXT = False			#'POKEMON' text
+ITEM_NAMES = False			#Various item names, not item table
+BERRY_DESCRIPTIONS = False	#Desciprtions of Berries in 'check tag'
+POKE_MENU = False			#Things related to pokemon menu
+CANCEL = False				#Various instances of word 'cancel'
+OPTIONS = False				#Text Speed, Buttons, etc.
+YESNO = False				#Yes, No text
+SAVE_MENU = False			#Text that appears when you save the game
+TRAINERCARD = False			#Various texts in the trainer card
+CONTEST_DESC = False			#Move's contest descriptions
+NEWGAME_OPTIONS = False		#New game, Continue, etc.
+BOYGIRL = False				#Boy/Girl text
+MULTICHOICES = False			#All Multichoice boxes
+STD_TABLE = False			#scripting std table
+TV_REPORTS = False			#Decap Tv Reports
+GABBY_TV_REPORTS = False		#TV Reports brought to you by Gabby lol
+DEX_DESCRIPTIONS = False		#Decap Pokemon descriptions in dex
+BATTLE_STRINGS = False		#Decap all battle strings
+ITEMS = False				#Decap item names and item descriptions
+TRAINER_CLASSES = False		#Decap all trainer classes
+BIRCH_INTRO = False			#Decap Birch Intro
+MAP_NAMES = False			#Decap Map Names
+TRAINER_NAMES = False		#Decap All Trainer Names
+FD_OVERWORLD = False			#Special character FD in overworld
+DEX_MENU = False				#Decap stuff in pokedex
 BEHAVIOURAL_SCRIPTS = True	#Run through all tiles' behavioural scripts to decap messages
 STANDART_SCRIPTS = True		#Run through standart scripts
-PLAYERS_PC = True			#Decap players pc text
-BIRCH_TROUBLES = True		#Text when you choose your starter
-BATTLE_OPTIONS = True		#Decap Fight/Run/Menu/Pokemon and TYPE
-POKENAV = True				#Various things in the pokenav
+PLAYERS_PC = False			#Decap players pc text
+BIRCH_TROUBLES = False		#Text when you choose your starter
+BATTLE_OPTIONS = False		#Decap Fight/Run/Menu/Pokemon and TYPE
+POKENAV = False				#Various things in the pokenav
+
+FLAGSINFO_FILE = False	#creates a file with flags/vars/specials info
 
 import shutil
 import sys
@@ -218,7 +221,24 @@ def handle_trainerbattle_cmd(rom, script_ptr, counter):
 				counter += 4
 				decap_msg_in_script(rom, ptr)
 	return counter
-						
+	
+def read_byte(rom, offset):
+	rom.seek(offset)
+	return int.from_bytes(rom.read(1), 'little')
+	
+def read_hword(rom, ptr):
+	rom.seek(ptr)
+	return int.from_bytes(rom.read(2), 'little')
+	
+def add_var(varID, script_ptr, to_write):
+	if varID >= 0x4000 and varID <= 0x40FF:
+		if script_ptr == 0 or (hex(script_ptr) not in vars_offsets[varID - 0x4000]):
+			vars_offsets[varID - 0x4000] += to_write
+			
+def add_special(specialID, script_ptr):
+	if specialID < 0x20F and hex(script_ptr) not in special_offsets[specialID]:
+		special_offsets[specialID] += ("Script at " + hex(script_ptr) + '\n')
+																		
 def decap_msg_in_script(rom, script_ptr):
 	if script_ptr == 0x0:
 		return
@@ -233,8 +253,46 @@ def decap_msg_in_script(rom, script_ptr):
 			print("Last in Table: " + hex(len(args_as_bytes) - 1))
 			print("UNSUPPORTED COMMAND! " + hex(cmd_id) + " Offset: " + hex(script_ptr) + " Pos: " + hex(script_ptr + counter))
 			sys.exit(1)
-		elif cmd_id == 2 or cmd_id == 3 or cmd_id == 8 or cmd_id == 9 or cmd_id == 0xC or cmd_id == 0xD: #end/return/gotostd/callstd/jumpram/killscript
+		elif cmd_id == 0x2B or cmd_id == cmd_id == 0x2A or cmd_id == 0x29: #checkflag, clearflag, setflag
+			flagID = read_hword(rom, script_ptr + counter)
+			counter += 2
+			if flagID < len(flags_offsets):
+				if hex(script_ptr) not in flags_offsets[flagID]:
+					flags_offsets[flagID] += ("Script at " + hex(script_ptr) + '\n')
+		elif cmd_id == 0x16: #setvar
+			add_var(read_hword(rom, script_ptr + counter), script_ptr, "Script at " + hex(script_ptr) + '\n')
+			counter += 4
+		elif cmd_id == 0x21: #compare var to value
+			add_var(read_hword(rom, script_ptr + counter), script_ptr, "Script at " + hex(script_ptr) + '\n')
+			counter += 4
+		elif cmd_id == 0x22: #compare var to var
+			add_var(read_hword(rom, script_ptr + counter), script_ptr, "Script at " + hex(script_ptr) + '\n')
+			counter += 2
+			add_var(read_hword(rom, script_ptr + counter), script_ptr, "Script at " + hex(script_ptr) + '\n')
+			counter += 2
+		elif cmd_id == 0x25: #special
+			specialID = read_hword(rom, script_ptr + counter)
+			counter += 2
+			add_special(specialID, script_ptr)
+		elif cmd_id == 0x26: #special 2
+			varID = read_hword(rom, script_ptr + counter)
+			add_var(varID, script_ptr, "Script at " + hex(script_ptr) + '\n')
+			counter += 2
+			specialID = read_hword(rom, script_ptr + counter)
+			counter += 2
+			add_special(specialID, script_ptr)
+		elif cmd_id == 0x19 or cmd_id == 0x1A: #copyvar, setvar2
+			add_var(read_hword(rom, script_ptr + counter), script_ptr, "Script at " + hex(script_ptr) + '\n')
+			counter += 2
+			add_var(read_hword(rom, script_ptr + counter), script_ptr, "Script at " + hex(script_ptr) + '\n')
+			counter += 2
+		elif cmd_id == 2 or cmd_id == 3 or cmd_id == 8 or cmd_id == 0xC or cmd_id == 0xD: #end/return/gotostd/callstd/jumpram/killscript
 			break
+		elif cmd_id == 9: #callstd value check
+			arg = read_byte(rom, script_ptr + counter)
+			counter += 1
+			if arg >= 10:
+				break
 		elif cmd_id == 5: #goto
 			goto_script = read_ptr(rom, script_ptr + counter)
 			if local_script_check(checked_scripts, goto_script):
@@ -282,12 +340,26 @@ def decap_msg_in_script(rom, script_ptr):
 			counter = handle_trainerbattle_cmd(rom, script_ptr, counter)
 		else:
 			counter += args_as_bytes[cmd_id]
-						
+					
+maps_in_banks = [56, 4, 4, 5, 6, 7, 8, 6, 6, 13, 7, 16, 9, 22, 12, 14, 14, 1, 1, 1, 2, 0, 0, 0, 107, 60, 88, 1, 0, 12, 0, 0, 2, 0]
+					
 def decap_sings_npcs(rom):
 	#Loop through all map headers
 	offset = 0x485D60
-	while offset < 0x486574: #0x486574
+	map_counter = 0x0
+	while offset <= 0x486574: #0x486574
 		header_ptr = read_ptr(rom, offset)
+		maps_sum = 0x0
+		map_bank = 0xFF
+		map_no = 0xFF
+		for i in range(0, len(maps_in_banks)):
+			maps_sum += maps_in_banks[i] + 1
+			if map_counter < maps_sum:
+				map_bank = i
+				map_no = map_counter
+				for j in range(0, map_bank):
+					map_no -= (maps_in_banks[j] + 1)
+				break
 		if header_ptr != 0:
 			level_scripts = read_ptr(rom, header_ptr + 8)
 			if LEVEL_SCRIPTS == True and level_scripts != 0:
@@ -309,6 +381,7 @@ def decap_sings_npcs(rom):
 							tag2_counter += 2
 							if varID == 0x0:
 								break
+							add_var(varID, 0, "Level Script Map Bank = " + str(map_bank) + " Map No = " + str(map_no) + '\n')
 							tag2_counter += 2
 							tag2_script_ptr = read_ptr(rom, script_ptr + tag2_counter)
 							decap_msg_in_script(rom, tag2_script_ptr)
@@ -323,8 +396,13 @@ def decap_sings_npcs(rom):
 					sings_ptr = read_ptr(rom, events_ptr + 0x10)
 					if sings_ptr != 0:
 						for i in range(0, signs_no):
-							script_ptr = read_ptr(rom, sings_ptr + (i * 0xC) + 0x8)
-							decap_msg_in_script(rom, script_ptr)
+							sign_type = read_byte(rom, sings_ptr + (i * 0xC) + 0x5)
+							if sign_type <= 4: #0-4 script msg
+								script_ptr = read_ptr(rom, sings_ptr + (i * 0xC) + 0x8)
+								decap_msg_in_script(rom, script_ptr)
+							elif sign_type <= 7: #5-7 hidden item
+								flagID = 0x1F4 + (read_hword(rom, sings_ptr + (i * 0xC) + 0xA))
+								flags_offsets[flagID] += ("Hidden Item " + hex(read_hword(rom, sings_ptr + (i * 0xC) + 0x8)) + " Map Bank =  " + str(map_bank) + " Map No = " + str(map_no) + '\n')
 				if PERSON_EVENTS == True:
 					rom.seek(events_ptr)
 					npc_no = int.from_bytes(rom.read(1), 'little')
@@ -332,6 +410,13 @@ def decap_sings_npcs(rom):
 					if npc_ptr != 0:
 						for i in range(0, npc_no):
 							script_ptr = read_ptr(rom, npc_ptr + (i * 0x18) + 0x10)
+							flagID = read_hword(rom, npc_ptr + (i * 0x18) + 0x14)
+							spriteID = read_byte(rom, npc_ptr + (i * 0x18) + 0x1)
+							if flagID < len(flags_offsets) and flagID != 0:
+								if spriteID == 59:
+									flags_offsets[flagID] += ("Pokeball Map Bank =  " + str(map_bank) + " Map No = " + str(map_no) + " Local ID = " + str(read_byte(rom, npc_ptr + (i * 0x18) + 0x0)) + '\n')
+								else:
+									flags_offsets[flagID] += ("Event flag Map Bank =  " + str(map_bank) + " Map No = " + str(map_no) + " Local ID = " + str(read_byte(rom, npc_ptr + (i * 0x18) + 0x0)) + '\n')
 							decap_msg_in_script(rom, script_ptr)
 				if TRIGGER_SCRIPTS == True:
 					rom.seek(events_ptr + 2)
@@ -339,10 +424,12 @@ def decap_sings_npcs(rom):
 					trigger_scripts = read_ptr(rom, events_ptr + 0xC)
 					if trigger_scripts != 0:
 						for i in range(0, scripts_no):
+							add_var(read_hword(rom, trigger_scripts + (i * 0x10) + 0x6), 0, "Trigger Script Map Bank = " + str(map_bank) + " Map No = " + str(map_no) + '\n')
 							script_ptr = read_ptr(rom, trigger_scripts + (i * 0x10) + 0xC)
 							decap_msg_in_script(rom, script_ptr)
 								
 		offset += 4
+		map_counter += 1
 
 def run_scripts_in_list(rom, script_list):
 	for i in range(0, len(script_list)):
@@ -351,6 +438,16 @@ def run_scripts_in_list(rom, script_list):
 def run_scripts_in_table(rom, table, length):
 	for i in range(0, length):
 		decap_msg_in_script(rom, read_ptr(rom, table + (i * 4)))
+		
+flags_offsets = [0] * 0x960
+vars_offsets = [0] * 0x100
+special_offsets = [0] * 0x20F
+for i in range (0, len(flags_offsets)):
+	flags_offsets[i] = "\n\nFlag " + hex(i) +':\n'
+for i in range (0, len(vars_offsets)):
+	vars_offsets[i] = "\n\nVar " + hex(i + 0x4000) +':\n'
+for i in range(0, len(special_offsets)):
+	special_offsets[i] = "\nSpecial " + hex(i) + ':\n'
 		
 shutil.copyfile(rom_name, copy_name) #copy rom
 with open(copy_name, 'rb+') as rom:
@@ -361,8 +458,53 @@ with open(copy_name, 'rb+') as rom:
 			rom.seek(multi_ptr + (i * 8) + 4)
 			no_options = int.from_bytes(rom.read(1), 'little')
 			decap_all_in_struct(rom, ptr, no_options)
+	if STANDART_SCRIPTS == True:
+		run_scripts_in_table(rom, 0x1DC2A0, 11)
+	if ADDITIONAL_SCRIPTS == True:
+		additional_scripts = [0x2715DE, 0x271857, 0x271862, 0x2A4B4C, 0x277513, 0x2774EF, 0x277509, 0x252BE8, 0x2736BC, 0x291FC0, 0x273D1F, 0x238EAF, 0x1DF7BA, 0x1F49EC, 0x1FA4D6, 0x21307B, 0x224175,  0x23C050, 0x2A8350, 0x252C88, 0x271354, 0x271354, 0x2A4B2A, 0x290705, 0x267EDB, 0x275BB7, 0x23B4E8, 0x23B5E9, 0x275A86, 0x275ADF, 0x275B38, 0x2A4B8A, 0x2A4B6F, 0x2A4B9B, 0x274482, 0x2744C0, 0x242CFC, 0x23B4E8, 0x275D1F, 0x275D0C, 0x275D2E, 0x275D0C, 0x252C88, 0x2907F0, 0x1F958F, 0x1F863F, 0x290CAE, 0x2908FD, 0x2926F8, 0x271362, 0x2713D1, 0x2713F8, 0x27138A,  0x2713C2]
+		run_scripts_in_list(rom, additional_scripts)
+	if BEHAVIOURAL_SCRIPTS == True:
+		script_list = [0x27EE0B, 0x271D92, 0x1E615D, 0x2393F9, 0x2A4BAC, 0x26A22A, 0x27208F, 0x292DE5, 0x2725CE, 0x2725D7, 0x2725E9, 0x2725F2, 0x2725FB, 0x272604, 0x277B8A, 0x277365, 0x27381B, 0x2C8393, 0x23B4BB, 0x23B589, 0x23B684, 0x23B68C, 0x1F860D, 0x1F9553]
+		#TV, PC, closed door, closed door 2, pokeblock feeder, trick house door, hoenn map, shoes instruction, books, books, vase, thrascan, shelves, blueprint, wireless results, cable results, questionare, ?, decorations PC, secret base PC, ?, toy pc, rival PC, rivalPC2, 
+		run_scripts_in_list(rom, script_list)
 	if SIGNPOSTS == True or PERSON_EVENTS == True or TRIGGER_SCRIPTS == True or LEVEL_SCRIPTS == True:
+		various_flags = {0x896 : "National Dex flag\n", 0x8AB : "Lanette met flag\n", 0x862 : "has Pokenav flag\n", 0x861 : "has Pokedex flag\n", 0x860 : "has Pokemon flag\n", 0x8C0 : "has Running Shoes flag\n", 0x8AC : "Mystery Event flag\n",  0x8DB : "Mystery Gift flag\n", 0x53 : "Legends in Sotopolis flag\n", 0x8AE : "Black Flute on\n", 0x8AD : "White flute on\n", 0x88B : "Cant dismount bike flag\n", 0x88 : "first Wally call flag\n", 0x8A : "Scott call after fortree gym leader defeat\n",  0x72 : "Scott call on S.S Tidal\n",  0x80 : "Roxanne Call flag\n", 0x75 : "Rival Rayquaza call flag\n",  0x88C : "Safari Zone flag\n", 0x888 : "Flash Flag\n", 0x895 : "Clock Time Set\n", 0x88d : "is on Slateport ferry flag\n", 0x8C2 : "Related to RTC\n", 0x8d7 : "Used in PC boxes operations\n",  0x891 : "Lilycove City Hotel TV related\n", 0x894 : "Set after Record Mixing\n", 0x10c : "Used in Secret Bases\n", 0x922 : "Used in Secret Bases\n", 0x865 : "player profile phrase entered\n", 0x893 : "trendy phrase entered\n"}
+		various_vars = {0x402e: "set to 0 at new game, appears unused\n", 0x4036 : "Used in PC boxes operations\n", 0x402A : "Happiness step counter\n", 0x402B : "Overworld poison timer\n",  0x402C : "Related to RTC\n",  0x4040 : "Related to RTC\n", 0x400E : "Reset upon battle\n", 0x4021 : "Repel steps counter\n", 0x4054 : "Active secret base ID\n", 0x4026 : "Secret base map name ID\n", 0x4048 : "Soot Sack counter\n", 0x404B : "Daily Lottery var1\n", 0x404C : "Daily Lottery Var2\n", 0x4024 : "Daily Mirage Island var1\n", 0x4025 : "Daily Mirage Island var2\n", 0x4030 : "Daily Battle Frontier Battle Points 'spotting'\n", 0x4031 : "Daily get to frontier facility var\n", 0x4049 : "Daily Birch position var\n",  0x402F : "Daily the hottest going place var\n", 0x4047 : "highest seedot value\n", 0x404F : "highest lotad value\n", 0x4028 : "best bike time var1\n", 0x4029 : "best bike time var2\n", 0x4027 : "best bike collisions\n", 0x40C2 : "Return/Frustration giver var\n", 0x4038 : "Weather patterns related\n", 0x403A : "Faraway Island step counter\n", 0x4046 : "National Dex Var\n", 0x4023 : "Chosen starter\n", 0x40F2 : "Wally first call step counter\n", 0x40F3 : "Fortree Scott Call step counter\n", 0x40F5 : "SS Tidal Scott Call step counter\n",  0x40F4 : "Roxanne Call step counter\n",  0x40F6 : "Rival Rayquaza call step counter\n", 0x404A : "Slatepot ferry step counter\n",  0x40B4 : "Slateport ferry course ID\n"}
+		for key, value in various_flags.items():
+			flags_offsets[key] += value
+			
+		for key, value in various_vars.items():
+			vars_offsets[key - 0x4000] += value
+			
+		for i in range(0x500, 0x500 + 854):
+			flags_offsets[i] += ("trainer " + hex(i - 0x500) + " flag")
+		for i in range(0x867, 0x867 + 8):
+			flags_offsets[i] += ("badge " + hex(i - 0x867 + 1) + " flag\n")
+		for i in range(0x15C, 0x15C + 77):
+			flags_offsets[i] += ("pokenav trainer " + hex(i - 0x15C + 1) + " flag")
+		for i in range(0x1E4, 0x1F4):
+			flags_offsets[i] += ("Mystery Gift related " + str(i - 0x1E4 + 1) + " flag")
+		for i in range(0x920, len(flags_offsets)):
+			flags_offsets[i] += ("Daily flag " + str(i - 0x920 + 1) + "\n")
+			
+		for i in range(0x40DD, 0x40E5):
+			vars_offsets[i - 0x4000] += ("Mystery Gift related var" + str(i - 0x40DD + 1) + '\n')
+		for i in [0x40EC, 0x40ED, 0x40EE, 0x40EF, 0x40F0]:
+			vars_offsets[i - 0x4000] += ("Secret base related\n")
+		for i in [0x40E6, 0x40EB, 0x40E7, 0x40E8, 0x40E9, 0x40EA, 0x40F1]:
+			vars_offsets[i - 0x4000] += ("TV related\n")
+			
 		decap_sings_npcs(rom)
+		if FLAGSINFO_FILE == True:
+			flags = open('flags_info.txt',  'w')
+			flags.truncate()
+			for i in range(0, len(flags_offsets)):
+				flags.write(flags_offsets[i])
+			for i in range(0, len(vars_offsets)):
+				flags.write(vars_offsets[i])
+			for i in range(0, len(special_offsets)):
+				flags.write(special_offsets[i])
+			flags.close()
 	if PC_OPTIONS == True:
 		decap_all_in_table(rom, 0x5716C0, 10) #'withdraw, deposit'
 		decap_all_in_table(rom, 0x58BB70, 4)#'someone's pc, log off'
@@ -479,17 +621,11 @@ with open(copy_name, 'rb+') as rom:
 	if FD_OVERWORLD == True:
 		FD_list = [0x5E821B, 0x5E8224, 0x5E8229, 0x5E8231, 0x5E8236, 0x5E823C, 0x5E8243, 0x5E8249, 0x5E8250, 0x5E8258, 0x5E8260, 0x5E8268, 0x5E8264]
 		decap_in_list(rom, FD_list)
-	if BEHAVIOURAL_SCRIPTS == True:
-		script_list = [0x27EE0B, 0x271D92, 0x1E615D, 0x2393F9, 0x2A4BAC, 0x26A22A, 0x27208F, 0x292DE5, 0x2725CE, 0x2725D7, 0x2725E9, 0x2725F2, 0x2725FB, 0x272604, 0x277B8A, 0x277365, 0x27381B, 0x2C8393, 0x23B4BB, 0x23B589, 0x23B684, 0x23B68C, 0x1F860D, 0x1F9553]
-		#TV, PC, closed door, closed door 2, pokeblock feeder, trick house door, hoenn map, shoes instruction, books, books, vase, thrascan, shelves, blueprint, wireless results, cable results, questionare, ?, decorations PC, secret base PC, ?, toy pc, rival PC, rivalPC2, 
-		run_scripts_in_list(rom, script_list)
 	if DEX_MENU == True:
 		decap_all_in_table(rom, 0x56EE0C, 21) #one giant table that's actually a few tables put one below another omitting ABC, etc.
 		decap_all_in_table(rom, 0x56EEB8, 60)
 		dex_list = [0x5E8840, 0x5E887C, 0x5E88A6, 0x5E881F, 0x5E8806, 0x5E88C8, 0x5E87D6, 0x5E87EF, 0x5E87A5, 0x5E871B, 0x5E8723, 0x5E8785]
 		decap_in_list(rom, dex_list)
-	if STANDART_SCRIPTS == True:
-		run_scripts_in_table(rom, 0x1DC2A0, 11)
 	if PLAYERS_PC == True:
 		decap_all_in_table(rom, 0x5DFEA4, 4)
 		decap_all_in_struct(rom, 0x5DFEB4, 4)
