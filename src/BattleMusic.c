@@ -18,6 +18,7 @@ u16 choose_song_depending_on_class(enum trainer_class class, u16 trainerID)
         songID = 0x1E3;
         break;
     //battle frontier bosses
+    case CLASS_SALON_MAIDEN:
     case CLASS_DOME_ACE:
     case CLASS_PALACE_MAVEN:
     case CLASS_ARENA_TYCOON:
