@@ -49,11 +49,13 @@ ShinyCharm = 0x0 #set to item ID if you want to have that item in your hack
 #next feature
 HallofFameFix = False #set to true if you want to be able to have expanded pokemon properly displayed in the hall of fame
 #next feature
-FlagsVarsExpansion = True #set to true if you want to expand flags
+FlagsVarsExpansion = False #set to true if you want to expand flags
 FlagsVarsOffset = 0x0203CF64		#set to the location of your expanded saveblock
 NoOfNewFlags = 0x0 			#number of your new flags
 NoOfNewVars = 0x0			#number of your new vars
 ReuseOldDexFlags = True		#set to true only after dex expansion, allows you to have additional 1664 flags that were used as the original seen/caught flags
+#next feature
+NewEscapeChars = False	#currently only allows you to set a specific colour in text
 #next feature
 
 insert_offset = 0xFF0000 	#Offset as to where insert data
@@ -294,6 +296,8 @@ def build_script():
 		globs["HallOfFame.s"] = process_assembly
 	if FlagsVarsExpansion == True:
 		globs["FlagsVarsExpansion.c"] = process_c
+	if NewEscapeChars == True:
+		globs["SpecialChars.s"] = process_assembly
 	#check if at least one file is being built
 	if not globs:
 		print("No feature chosen.")
@@ -507,6 +511,8 @@ def insert_script(rom):
 	if FlagsVarsExpansion == True:
 		hook(rom, table["get_flag_address_new"],  0x09D6EC, 1)
 		hook(rom, table["get_var_address_new"],  0x09D648, 1)
+	if NewEscapeChars == True:
+		hook(rom, table["FC_switch_hook"], 0x0058E0, 0)
 		
 	# Insert repoints
 	if BWRepel == True:
