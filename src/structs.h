@@ -34,7 +34,7 @@ struct move_info{
     u8 padd[3];
 };
 
-extern struct move_info (*move_table)[355];
+extern const struct move_info (*move_table)[355];
 
 struct fame_hall_poke_pos{
     s16 x_jump;
@@ -114,8 +114,18 @@ extern struct palette OBJ_PaletteMem2[16];
 extern struct palette BG_PaletteMem[16];
 extern struct palette BG_PaletteMem2[16];
 
+struct footer{
+    u32 width_blocks;
+    u32 height_blocks;
+    const void* border_data;
+    const void* blocksID_movement;
+    const struct blockset* primary_blockset;
+    const struct blockset* secondary_blockset;
+};
+
+
 struct mapheader{
-    void* footer;
+    struct footer* map_footer;
     void* events;
     void* scripts;
     void* connections;
@@ -150,7 +160,7 @@ struct evolution_sub{
     u8 pad2;
 };
 
-extern struct evolution_sub (*evo_table)[POKES_NO][EVO_PER_POKE];
+extern const struct evolution_sub (*evo_table)[POKES_NO][EVO_PER_POKE];
 
 struct iv_set
 {
@@ -198,7 +208,7 @@ struct battle_participant {
     u32 otid;
 };
 
-extern struct battle_participant battle_participants[4];
+extern const struct battle_participant battle_participants[4];
 
 struct pokemenu{
     void* field_0;
@@ -339,7 +349,7 @@ struct trainer_data{
     struct poke_trainer_data* poke_data;
 };
 
-extern struct trainer_data (*trainer_table)[];
+extern const struct trainer_data (*trainer_table)[];
 
 struct pal_poke{
     void* pal;
@@ -385,7 +395,7 @@ struct poke_basestats{
     u16 padding;
 };
 
-extern struct poke_basestats (*basestat_table)[POKES_NO];
+extern const struct poke_basestats (*basestat_table)[POKES_NO];
 
 struct pokemon{
 	u32 PID;
@@ -463,9 +473,11 @@ struct tile_ball{
 };
 
 struct tile_pal{
-    void* ptr;
+    const struct palette* ptr;
     u16 tile_ID;
 };
+
+extern const struct tile_pal pal_npc_tile_table[];
 
 struct object{
     struct sprite final_oam;
@@ -544,7 +556,7 @@ struct item_data{
     struct item_struct items[ALL_ITEMS];
 };
 
-extern struct item_data* item_table;
+extern const struct item_data* item_table;
 
 struct pokeblock{
     u8 index;
@@ -832,5 +844,21 @@ struct wild_poke_data{
 };
 
 extern struct wild_poke_data wild_pokemon_data[125];
+
+struct npc_type{
+    u16 tiles_tag;
+    u16 pal_tag;
+    u16 pal_tag2;
+    u16 field_6;
+    struct coords16 pos_neg_center;
+    u8 field_C;
+    u8 field_D;
+    u8 field_E;
+    void* oam;
+    void* formation;
+    void* image_anims;
+    void* gfx_table;
+    void* rotscale_anims;
+};
 
 #endif /* B_STRUCTS */

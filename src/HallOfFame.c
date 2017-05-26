@@ -377,7 +377,7 @@ void fame_hall_pc_display_poke_sprites(u8 taskID)
     unsigned_int_to_string(script_text_buff1, curr_task->private[1], 1, 3);
     fdecode_and_copy(displayed_string, text_HALL_OF_FAME_NO);
 
-    void* txt = text_PICK_NEXT_CANCEL;
+    const u8* txt = text_PICK_NEXT_CANCEL;
     if (curr_task->private[0] == 0)
         txt = text_PICK_CANCEL;
     fame_hall_pc_put_text(displayed_string, txt, 0, 0, 1);

@@ -49,7 +49,7 @@ u16 choose_song_depending_on_class(enum trainer_class class, u16 trainerID)
     return songID;
 }
 
-u16 choose_song_for_battle()
+u16 choose_song_for_battle(void)
 {
     u16 songID;
     if (battle_flags.flagx1000)

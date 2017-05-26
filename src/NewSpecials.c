@@ -90,7 +90,7 @@ bool sp212_ability_switcher(void) //poke id; returns 0 if couldnt switch
 {
     bool switched = 0;
     struct pokemon* poke = &party_player[var_8004];
-    struct poke_basestats* stats = &(*basestat_table)[get_attributes(poke, ATTR_SPECIES, 0)];
+    const struct poke_basestats* stats = &(*basestat_table)[get_attributes(poke, ATTR_SPECIES, 0)];
     if (stats->ability2)
     {
         u8 ability = get_attributes(poke, ATTR_ABILITY_BIT, 0) ^ 1;
@@ -112,7 +112,7 @@ void sp214_add_safaristeps(void) //amount to add or sub if the value is negative
 
 void playernick_callback2(void)
 {
-    if (compare_two_strings(battle_text_buff1, &sav2->name) == 0)
+    if (compare_two_strings(battle_text_buff1, sav2->name) == 0)
         var_800D_lastresult = 0;
     else
         var_800D_lastresult = 1;
@@ -122,8 +122,8 @@ void playernick_callback2(void)
 
 void sp215_set_player_nick(void)
 {
-    strcpy_xFF_terminated_0(battle_text_buff1, &sav2->name);
-    prepare_string_inserter(0, &sav2->name, sav2->gender, 0, 0, playernick_callback2);
+    strcpy_xFF_terminated_0(battle_text_buff1, sav2->name);
+    prepare_string_inserter(0, sav2->name, sav2->gender, 0, 0, playernick_callback2);
 }
 
 void sp216_set_timer(void)

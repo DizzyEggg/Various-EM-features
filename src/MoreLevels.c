@@ -171,8 +171,6 @@ const struct exp_group exp_table[6] = {
     19766563, 20003760, 20242846, 20483830}}
 };
 
-struct rbox_rom ExpRbox = {0, 0x16, 0xE, 8, 4, 6, 0x21F};
-
 #endif // MORELEVELS
 
 #if COLORED_STATS == true
@@ -200,7 +198,7 @@ void set_nature_color(u8 nature, u8 stat, u8 text_ptr[])
 
 #endif // COLORED_STATS
 
-void display_stats_on_left()
+void display_stats_on_left(void)
 {
     u8 text_stat_ptrs[4][16];
     u16* stats = &poke_summary->curr_hp;
@@ -216,7 +214,7 @@ void display_stats_on_left()
         digits = 4;
     }
     unsigned_int_to_string(&text_stat_ptrs[0][index], stats[0], 1, digits);
-    unsigned_int_to_string(&text_stat_ptrs[1], stats[1], 1, digits);
+    unsigned_int_to_string(text_stat_ptrs[1], stats[1], 1, digits);
     if (index == 3)
     {
         text_stat_ptrs[2][0] = 0xFC;
@@ -237,12 +235,12 @@ void display_stats_on_left()
     unsigned_int_to_string(&text_stat_ptrs[3][index], stats[3], 1, 7);
     for (u8 i = 0; i < 4; i++)
     {
-        store_f7_text(i, &text_stat_ptrs[i]);
+        store_f7_text(i, text_stat_ptrs[i]);
     }
-    display_f7_texts(&displayed_string, (void*)(0x0861CE82));
+    display_f7_texts(displayed_string, (void*)(0x0861CE82));
 }
 
-void display_stats_on_right()
+void display_stats_on_right(void)
 {
     u8 text_stat_ptrs[3][13];
     clear_f7_texts();
@@ -276,15 +274,16 @@ void display_stats_on_right()
         index += 3;
         #endif // COLORED_STATS
         unsigned_int_to_string(&text_stat_ptrs[i][index], stat, 1, digits);
-        store_f7_text(i, &text_stat_ptrs[i]);
+        store_f7_text(i, text_stat_ptrs[i]);
     }
-    display_f7_texts(&displayed_string, (void*)(0x0861CE8E));
+    display_f7_texts(displayed_string, (void*)(0x0861CE8E));
 }
 
 #if MORELEVELS == true
 
-void display_exp_instatssummary()
+void display_exp_instatssummary(void)
 {
+    static const struct rbox_rom ExpRbox = {0, 0x16, 0xE, 8, 4, 6, 0x21F};
     u8 rboxID = pokesummary_create_rbox(&ExpRbox - 4, 4);
     unsigned_int_to_string(&script_text_buff1[2], poke_summary->owned_exp, 1, 10);
     script_text_buff1[0] = 0x77;
@@ -318,7 +317,7 @@ void pokemenu_print_HP(u16 value, struct pokemenu* menu, u8 curr)
         else if (value <= 999)
             to_sub = 0;
     }
-    u8* text_ptr = unsigned_int_to_string(&script_text_buff1, value, 1, digits);
+    u8* text_ptr = unsigned_int_to_string(script_text_buff1, value, 1, digits);
     if (curr)
     {
         text_ptr[0] = 0xBA;

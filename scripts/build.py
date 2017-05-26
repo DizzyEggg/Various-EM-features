@@ -53,10 +53,11 @@ FlagsVarsExpansion = False #set to true if you want to expand flags
 FlagsVarsOffset = 0x0203CF64		#set to the location of your expanded saveblock
 NoOfNewFlags = 0x0 			#number of your new flags
 NoOfNewVars = 0x0			#number of your new vars
-ReuseOldDexFlags = True		#set to true only after dex expansion, allows you to have additional 1664 flags that were used as the original seen/caught flags
+ReuseOldDexFlags = False		#set to true only after dex expansion, allows you to have additional 1664 flags that were used as the original seen/caught flags
 #next feature
 NewEscapeChars = False	#currently only allows you to set a specific colour in text
 #next feature
+DNSystem = True #is being worked on, use at your own risk!
 
 insert_offset = 0xFF0000 	#Offset as to where insert data
 rom_name = "BPEE0.gba"		#Name of your rom
@@ -103,8 +104,7 @@ SRC = './src'
 BUILD = './build'
 ASFLAGS = ['-mthumb', '-I', SRC]
 LDFLAGS = ['BPEE.ld', '-T', 'linker.ld']
-CFLAGS = ['-mthumb', '-mno-thumb-interwork', '-mcpu=arm7tdmi',
-		'-fno-inline', '-mlong-calls', '-march=armv4t', '-Wall', '-O2']
+CFLAGS = ['-mthumb', '-mno-thumb-interwork', '-mcpu=arm7tdmi', '-mtune=arm7tdmi', '-mlong-calls', '-march=armv4t', '-Wall', '-O2']
 
 def run_command(cmd):
 	try:
@@ -298,6 +298,9 @@ def build_script():
 		globs["FlagsVarsExpansion.c"] = process_c
 	if NewEscapeChars == True:
 		globs["SpecialChars.s"] = process_assembly
+	if DNSystem == True:
+		globs["DNS.c"] = process_c
+		globs["DNS.s"] = process_assembly
 	#check if at least one file is being built
 	if not globs:
 		print("No feature chosen.")
@@ -513,6 +516,11 @@ def insert_script(rom):
 		hook(rom, table["get_var_address_new"],  0x09D648, 1)
 	if NewEscapeChars == True:
 		hook(rom, table["FC_switch_hook"], 0x0058E0, 0)
+	if DNSystem == True:
+		hook(rom, table["blockset_load_pal"], 0x088CC4, 3)
+		hook(rom, table["npc_pal_patch"], 0x08E91C, 2)
+		hook(rom, table["oec_alloc_apply_pal"], 0x0B5C94, 2)
+		hook(rom, table["oec_pal_alloc2"], 0x0B5C6C, 2)
 		
 	# Insert repoints
 	if BWRepel == True:
@@ -562,6 +570,15 @@ def insert_script(rom):
 		routine_repoint(rom, table["s26_special2"], 0x1DB714)
 	if FireRedFishing == True or ChainFishing == True or FishingFlag != 0 or ShinyCharm != 0x0:
 		routine_repoint(rom, table["run_fishing_functions"], 0x08CD90)
+	if DNSystem == True:
+		routine_repoint(rom, table["c2_overworld"], 0x085E20)
+		routine_repoint(rom, table["c2_overworld"], 0x085F54)
+		routine_repoint(rom, table["c2_overworld"], 0x085FC8)
+		routine_repoint(rom, table["c2_overworld"], 0x086020)
+		routine_repoint(rom, table["c2_overworld"], 0x086070)
+		routine_repoint(rom, table["c2_overworld"], 0x0860C4)
+		routine_repoint(rom, table["c2_overworld"], 0x086114)
+		routine_repoint(rom, table["c2_overworld"], 0x08613C)
 	# Insert byte changes
 	if MoreMoney == True:
 		bytereplace(rom, 0x0E5188, 9999999, 4)

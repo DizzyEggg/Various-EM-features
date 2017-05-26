@@ -1,20 +1,20 @@
 #include "defines.h"
 
-struct poke_config config_table[255] = {
-    {{252, 252, 252, 252, 252, 252}, {31, 31, 31, 31, 31, 31}, 1, 1, 1},
+const struct poke_config config_table[255] = {
+    {{252, 252, 252, 252, 252, 252}, {31, 31, 31, 31, 31, 31}, 1, 1, 1, 0},
 };
 
 void create_trainer_pokemon(struct pokemon* poke, u16 trainerID, u8 purge)
 {
     if (trainerID != 0x400 && battle_flags.trainer && !(BATTLE_FRONTIER_BATTLE || battle_flags.flagx800 || battle_flags.flag_x4000000))
     {
-        struct trainer_data* trainer = &(*trainer_table)[trainerID];
+        const struct trainer_data* trainer = &(*trainer_table)[trainerID];
         if (purge)
             pokemon_purge_opponent();
         u8 no_of_pokes = trainer->poke_number;
         if (battle_flags.multibattle && no_of_pokes > 3)
             no_of_pokes = 3;
-        u32 TiD = calculate_checksum(trainer, sizeof(struct trainer_data));
+        u32 TiD = calculate_checksum((void*) trainer, sizeof(struct trainer_data));
         struct poke_trainer_data* poke_info = trainer->poke_data;
         u8 struct_size = 8;
         if (trainer->custom_moves)
@@ -22,7 +22,7 @@ void create_trainer_pokemon(struct pokemon* poke, u16 trainerID, u8 purge)
         for (u8 i = 0; i < no_of_pokes; i++)
         {
             struct poke_trainer_data* curr_poke = (struct poke_trainer_data*) ADD_POINTER(poke_info, i * struct_size);
-            struct poke_config* config = &config_table[curr_poke->evs_id];
+            const struct poke_config* const config = &config_table[curr_poke->evs_id];
             u32 custom_pid = 0;
             u32 PiD = 0;
             if (trainer->custom_item && trainer->custom_moves)

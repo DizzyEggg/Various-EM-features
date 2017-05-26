@@ -127,6 +127,12 @@ gpu_pal_obj_alloc_tag_and_apply = 0x08008744|1;
 template_instanciate = 0x08006DF4|1;
 showsprite = 0x0808DCAC|1;
 hidepsrite = 0x0808D8C4|1;
+npc_pal_idx_for_given_tag = 0x0808E980|1;
+npc_paltag_set_load_on_warp = 0x0808F2F8|1;
+npc_pal_op = 0x08153FAC|1;
+get_npc_type_ptr = 0x0808E694|1;
+npc_load_two_palettes__and_record = 0x0808EA38|1;
+oe_read_word = 0x080B5C24|1;
 
 poke_summary = 0x0203CF1C;
 script_text_buff1 = 0x02021CC4;
@@ -169,7 +175,8 @@ npc_states = 0x02037350;
 bag_item_template = 0x08614FF4;
 flags_x4000 = 0x020375FC;
 vars_8000 = 0x081DBA0C;
-
+decompressed_pal = 0x02037FE8;
+pal_npc_tile_table = 0x0850BBC8;
 
 OBJ_PaletteMem = 0x02037914;
 OBJ_PaletteMem2 = 0x02037D14;
@@ -177,6 +184,7 @@ BG_PaletteMem = 0x02037714;
 BG_PaletteMem2 = 0x02037B14;
 egg_move_buffer = 0x02024A38;
 super = 0x030022C0;
+gpu_pal_tags = 0x03000CF0;
 
 /*Rbxes*/
 str_font1_get_min_width = 0x080E2D2C|1;
@@ -191,6 +199,7 @@ str_get_half_width = 0x081DB35C|1;
 bg_mark_for_sync = 0x081999BC|1;
 prepare_multichoice_task = 0x080E1FBC|1;
 check_walkrun_bitfield_for = 0x0808BCC0|1;
+sub_80ABE18 = 0x080ABE18|1;
 
 var_8004 = 0x020375E0;
 var_8005 = 0x020375E2;
@@ -204,10 +213,12 @@ no_of_recorded_bytes = 0x0203C794;
 battle_record = 0x0203BD34;
 viewing_recorded_battle = 0x0203C7AC;
 var_800D_lastresult = 0x020375F0;
+fadescreen_info = 0x02037FD4;
 
 quit_recorded_battle = 0x080384E4|1;
 pal_fade_control_reset_maybe = 0x080A1FD0|1;
 fadescreen_related = 0x080A1AD4|1;
+c2_ov_basic = 0x08085E24|1;
 
 /*move animation related*/
 animtask_get_targetside_arg7 = 0x08117780 | 1;

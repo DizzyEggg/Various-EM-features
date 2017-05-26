@@ -1,6 +1,6 @@
 #include "defines.h"
 
-void add_suitable_menu_options()
+void add_suitable_menu_options(void)
 {
     if (custom_flagcheck(DEX_MENU_FLAG)) //pokedex
         menu_option_add(MENU_DEX);

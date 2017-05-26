@@ -61,6 +61,16 @@ enum trainer_class{
     CLASS_PKMN_TRAINER2, //0x41
 };
 
+enum map_type{
+    MAP_TOWN = 1,
+    MAP_CITY, //0x2
+    MAP_ROUTE, //0x3
+    MAP_CAVE, //0x4
+    MAP_UNDERWATER, //0x5
+    MAP_INSIDE = 8,
+    MAP_SECRETBASE, //0x9
+};
+
 #define REPEL_X 0
 #define REPEL_Y 0
 

@@ -31,13 +31,13 @@ u8 add_to_multichoice_option(struct multichoice_option Options[], u16 itemID, u8
     return optionID;
 }
 
-void multichoice_repel_box()
+void multichoice_repel_box(void)
 {
     struct multichoice_option RepelTexts[3];
-    u8 register no_of_options = 0;
-    no_of_options = add_to_multichoice_option(&RepelTexts[0], ITEM_MAXREPEL, no_of_options);
-    no_of_options = add_to_multichoice_option(&RepelTexts[0], ITEM_SUPERREPEL, no_of_options);
-    no_of_options = add_to_multichoice_option(&RepelTexts[0], ITEM_REPEL, no_of_options);
+    register u8 no_of_options = 0;
+    no_of_options = add_to_multichoice_option(RepelTexts, ITEM_MAXREPEL, no_of_options);
+    no_of_options = add_to_multichoice_option(RepelTexts, ITEM_SUPERREPEL, no_of_options);
+    no_of_options = add_to_multichoice_option(RepelTexts, ITEM_REPEL, no_of_options);
     if (no_of_options > 1)
     {
         multichoice_rbox_create(no_of_options, REPEL_X, REPEL_Y, RepelTexts);
@@ -45,7 +45,7 @@ void multichoice_repel_box()
     var_800D_lastresult = no_of_options;
 }
 
-void s_repel_getitemquality()
+void s_repel_getitemquality(void)
 {
     u16* var_ptr = &var_8004;
     u16 itemID = var_ptr[var_800D_lastresult];

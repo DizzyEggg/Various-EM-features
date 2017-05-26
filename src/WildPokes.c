@@ -125,7 +125,7 @@ bool fish8_decide_if_bites_more(struct task*);
 bool fish9_print_poke_on_hook(struct task*);
 bool fishA_wait_for_a_pressed(struct task*);
 
-void fish_fail(struct task* curr_task, void* text_ptr)
+void fish_fail(struct task* curr_task, const u8* text_ptr)
 {
     fish_obj_hero_anim();
     obj_change_img(&objects[walkrun.oamID], get_fishing_direction_frame(sp121_get_player_direction()));
@@ -165,7 +165,7 @@ bool fishF_finish_fishing_failure(struct task* curr_task)
     return 0;
 }
 
-fish_task fish_tasks[0x10] = {fish0_lock, fish1_npc_lock, fish2_rodthrow_anim, fish3_prepare_dots, fish4_print_dots, fish5_encounter_odds, fish6_print_oh_a_bite,
+const fish_task fish_tasks[0x10] = {fish0_lock, fish1_npc_lock, fish2_rodthrow_anim, fish3_prepare_dots, fish4_print_dots, fish5_encounter_odds, fish6_print_oh_a_bite,
 fish7_fast_A_press_or_fail, fish8_decide_if_bites_more, fish9_print_poke_on_hook, fishA_wait_for_a_pressed, fishB_not_even_a_nibble,
 fishC_it_got_away, fishD_obj_hero_anim, fishE_npc_object_magic, fishF_finish_fishing_failure};
 

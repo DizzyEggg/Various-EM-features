@@ -83,7 +83,7 @@ u16 try_evolving_poke(struct pokemon* poke, enum evo_index index, u16 stoneID)
     u16 lvl = get_attributes(poke, ATTR_LEVEL, 0);
     u32 pid_form = __umodsi3(get_attributes(poke, ATTR_PID, 0) >> 0x10, 10);
 
-    struct evolution_sub* evos = (*evo_table)[species];
+    const struct evolution_sub* evos = (*evo_table)[species];
     u8 evos_num = EVO_PER_POKE;
     //check eevee
     if (EEVEE_TABLE == true && species == POKE_EEVEE)
@@ -93,9 +93,8 @@ u16 try_evolving_poke(struct pokemon* poke, enum evo_index index, u16 stoneID)
     }
     for (u8 i = 0; i < evos_num; i++)
     {
-        struct evolution_sub* evo = &evos[i];
-        u8 evolving = 0;
-        u8 item_delete = 0;
+        const struct evolution_sub* evo = &evos[i];
+        bool evolving = 0, item_delete = 0;
         u8 method = evo->method;
         switch (method)
         {
@@ -218,7 +217,7 @@ u16 try_evolving_poke(struct pokemon* poke, enum evo_index index, u16 stoneID)
                 u16 curr_species = get_attributes(curr_poke, ATTR_SPECIES, 0);
                 if (curr_poke != poke && curr_species)
                 {
-                    struct poke_basestats* stats = &((*basestat_table)[curr_species]);
+                    const struct poke_basestats* stats = &((*basestat_table)[curr_species]);
                     if (stats->type1 == evo->pad1 || stats->type2 == evo->pad1)
                     {
                         goto LEVELUP_EVO;
