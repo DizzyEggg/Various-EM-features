@@ -191,14 +191,13 @@ static u32 TimeToColor(void)
 
 static void apply_pal(const struct palette* pal, u16 ID, u16 size)
 {
+    u32 color = TimeToColor();
     if ((AFFECT_INDOORS == false && curr_mapheader.type == MAP_INSIDE)
         || (AFFECT_UNDERWATER == false && curr_mapheader.type == MAP_UNDERWATER))
         gpu_pal_apply(pal, ID, size);
     else //change pal depending on the day time
     {
         struct palette* changed_pal = (struct palette*) &decompression_buffer;
-        u32 color = TimeToColor();
-
         for (u16 i = 0; i < (size / 16 + 1); i++)
         {
             for (u16 col = 0; col < 16; col++)
@@ -239,10 +238,10 @@ void npc_pal_patch(u16 npcID, u16 ID)
 
 void ov_consider_palchange(void)
 {
-    if (get_colorID() == damage_loc) {return;} //it's the same time
+    if (get_colorID() == damage_loc || walkrun.bitfield & 0x20) {return;} //it's the same time or warping
     blockset_load_pal(curr_mapheader.map_footer->primary_blockset, 0, 192);
     blockset_load_pal(curr_mapheader.map_footer->secondary_blockset, 96, 224);
-    //patch NPCs
+    //patch all object palette
     for (u8 i = 0; i < 16; i++)
     {
         struct npc_state* NPC = &npc_states[i];
@@ -255,6 +254,11 @@ void ov_consider_palchange(void)
             npc_pal_patch(Type->pal_tag, (u8)fieldC - 16);
         else
             npc_pal_patch(Type->pal_tag, fieldC);
+    }
+    //patch tiles
+    for (u8 i = 0; i < 0x10; i++)
+    {
+        gpu_pal_tags[i] = 0xFFFF;
     }
 }
 

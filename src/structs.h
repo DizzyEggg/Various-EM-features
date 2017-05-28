@@ -861,4 +861,16 @@ struct npc_type{
     void* rotscale_anims;
 };
 
+struct fadescreen_exec{
+    u16 BLDCNT;
+    u8 field2;
+    u8 field3;
+    u16 BLDY;
+    u8 field6;
+    u8 flags : 7;
+    u8 is_fading : 1;
+};
+
+extern struct fadescreen_exec fadescreen_info;
+
 #endif /* B_STRUCTS */

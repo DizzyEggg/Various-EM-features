@@ -96,7 +96,7 @@ enum map_type{
 
 #define NO_OF_TUTORS		32
 #define NO_OF_TMS_HMS		58
-#define EXPANDED_LEARNSETS		false
+#define EXPANDED_LEARNSETS		true
 
 #define FAMEHALL_MAX 40
 
@@ -265,6 +265,9 @@ enum ball_stars{
 #define z_ 0xEE
 
 #endif /* DEFINES_H */
+
+
+
 
 
 

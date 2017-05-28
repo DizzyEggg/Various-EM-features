@@ -133,6 +133,7 @@ npc_pal_op = 0x08153FAC|1;
 get_npc_type_ptr = 0x0808E694|1;
 npc_load_two_palettes__and_record = 0x0808EA38|1;
 oe_read_word = 0x080B5C24|1;
+gpu_pal_free_by_tag = 0x0800884C|1;
 
 poke_summary = 0x0203CF1C;
 script_text_buff1 = 0x02021CC4;
